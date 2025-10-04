@@ -1,0 +1,32 @@
+{% import 'macros.jinja2' as macros %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recorrido del Caballo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Recorrido del Caballo</h1>
+    
+    <div class="formulario">
+        <form method="POST">
+            <div class="Entrada">
+                <label>Tamaño del tablero:</label>
+                <input type="number" name="tamaño" min="4" max="7" value="4" required>
+            </div>
+
+            <div class="Entrada">
+                <label>Fila del caballo:</label>
+                <input type="number" name="fila" min="0" max="7" value="0" required>
+            </div>
+            
+            <div class="Entrada">
+                <label>Columna del caballo:</label>
+                <input type="number" name="columna" min="0" max="7" value="0" required>
+            </div>
+            
+            <button type="submit">Generar</button>
+        </form>
+</body>
+</html>
