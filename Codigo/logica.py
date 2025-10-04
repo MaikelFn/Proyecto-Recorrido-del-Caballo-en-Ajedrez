@@ -86,5 +86,92 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
     tablero[filaActual][colActual] = -1
     return False
 
+
+###########################################################################
+########################  Camino Cerrado  #################################
+###########################################################################
+def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones):
+    if contador == Tamaño * Tamaño:
+        # Verificar si el último movimiento puede volver al inicio
+        if (filaActual, colActual) in soluciones:
+            print("Camino Cerrado:")
+            for linea in tablero:
+                print(linea)
+            return True
+        return False
+    
+    # L Abajo Izquierda: Fila +2, Columna -1
+    if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones):
+            return True
+        
+    # L Abajo Derecha: Fila +2, Columna +1
+    if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones):
+            return True
+        
+    # L Arriba Izquierda: Fila -2, Columna -1
+    if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones):
+            return True
+        
+    # L Arriba Derecha: Fila -2, Columna +1
+    if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones):
+            return True
+        
+    # L Izquierda Abajo: Fila +1, Columna -2
+    if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones):
+            return True
+        
+    # L Izquierda Arriba: Fila -1, Columna -2
+    if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones):
+            return True
+        
+    # L Derecha Abajo: Fila +1, Columna +2
+    if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones):
+            return True
+        
+    # L Derecha Arriba: Fila -1, Columna +2
+    if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones):
+            return True
+    return False
+
+def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones):
+    tablero[filaActual][colActual] = contador
+    if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones):
+        return True
+    tablero[filaActual][colActual] = -1
+    return False
+
+
+def Encontrar_Soluciones(tablero, fila, columna, tamaño):
+    adyacentes = []
+    if Movimiento_Valido(tablero, fila + 2, columna - 1, tamaño):
+        adyacentes.append((fila + 2, columna - 1))
+    if Movimiento_Valido(tablero, fila + 2, columna + 1, tamaño):
+        adyacentes.append((fila + 2, columna + 1))
+    if Movimiento_Valido(tablero, fila - 2, columna - 1, tamaño):
+        adyacentes.append((fila - 2, columna - 1))
+    if Movimiento_Valido(tablero, fila - 2, columna + 1, tamaño):
+        adyacentes.append((fila - 2, columna + 1))
+    if Movimiento_Valido(tablero, fila + 1, columna - 2, tamaño):
+        adyacentes.append((fila + 1, columna - 2))
+    if Movimiento_Valido(tablero, fila + 1, columna + 2, tamaño):
+        adyacentes.append((fila + 1, columna + 2))
+    if Movimiento_Valido(tablero, fila - 1, columna - 2, tamaño):
+        adyacentes.append((fila - 1, columna - 2))
+    if Movimiento_Valido(tablero, fila - 1, columna + 2, tamaño):
+        adyacentes.append((fila - 1, columna + 2))
+    return adyacentes
+
+
+# Ejemplo de uso
 tablero = CrearTablero(6, 0, 0)
-Encontrar_Camino_Abierto(0, 0, tablero, 6, 1)
+soluciones = Encontrar_Soluciones(tablero, 0, 0, 6)
+print("Posibles movimientos desde la posición inicial (0,0):", soluciones)
+Encontrar_Camino_Cerrado(0, 0, tablero, 6, 1, soluciones)
