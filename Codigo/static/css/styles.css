@@ -1,32 +1,187 @@
-/* Estilos del tablero */
 .matriz {
-    display: table;
-    border-collapse: separate;
-    border-spacing: 5px;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 4px;
+  background: #0a0a0a;
+  padding: 10px;
+  border-radius: 10px;
 }
 
-.fila {
-    display: table-row;
+.fila { 
+  display: table-row; 
 }
+
 
 .celda {
-    display: table-cell;
-    background-color: rgb(0, 0, 0);
-    width: 30px;
-    height: 30px;
-    border: 1px solid #333;
-    border-radius: 3px;
+  display: table-cell;
+  width: 30px;
+  height: 30px;
+  background: #000;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  transition: transform .15s, box-shadow .15s, border-color .15s;
 }
 
-.caballo {
-    display: table-cell;
-    background-color: rgba(41, 15, 15, 0.695);
-    width: 30px;
-    height: 30px;
-    border: 1px solid #333;
-    border-radius: 3px;
+
+.celda.visitada {
+  background: #00f729;
+  border-color: #bfbfbf;
 }
+
 
 .celda:hover {
-    background-color: #333;
+  transform: scale(1.06);
+  box-shadow: 0 0 8px rgba(0,0,0,.25);
+  border-color: #888;
+}
+
+
+.caballo{
+  background-position:center;
+  background-repeat:no-repeat;
+  background-size:contain;
+  filter: drop-shadow(0 0 1px rgba(0,0,0,.6));
+  background-image:url('./img/caballo_blanco.png');
+}
+
+.celda.visitada.caballo {
+  background-image: url('./img/caballo_blanco.png');
+}
+
+
+:root{
+  --bg: #0b0c10;
+  --panel: #12141a;
+  --panel-2: #171a22;
+  --text: #e6eaf2;
+  --muted: #a7afbf;
+  --border: #262b35;
+  --focus: #00d1ff;
+  --btn: #00c2ff;
+  --btn-2: #0098d6;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 10px 28px rgba(0,0,0,.45);
+}
+
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+}
+
+h1{
+  margin: 22px 0 16px;
+  font-size: clamp(28px, 5vw, 42px);
+  line-height: 1.1;
+  color: #f4f7fb;
+}
+
+.formulario{
+  width: min(980px, 92vw);                 
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 22px 16px;
+  margin-bottom: 18px;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+  gap: 14px 18px;
+  align-items: end;
+}
+
+.formulario .Entrada{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.formulario label{
+  font-size: 0.98rem;
+  color: var(--muted);
+}
+
+.formulario input[type="number"]{
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 1.05rem;
+  color: var(--text);
+  background: #0f1218;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .18s, box-shadow .18s, transform .04s, background-color .18s;
+}
+.formulario input[type="number"]:hover{
+  border-color: #2f3542;
+}
+.formulario input[type="number"]:focus{
+  border-color: rgba(0,209,255,.65);
+  box-shadow: 0 0 0 3px rgba(0,209,255,.18);
+  background: #0e1117;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+
+.formulario button[type="submit"]{
+  grid-column: 1 / -1;            
+  justify-self: start;            
+  padding: 12px 18px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: #061318;
+  background: linear-gradient(180deg, var(--btn), var(--btn-2));
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,194,255,.25);
+  transition: filter .2s, transform .06s, box-shadow .2s;
+}
+.formulario button[type="submit"]:hover{
+  filter: brightness(1.06);
+  box-shadow: 0 12px 30px rgba(0,194,255,.32);
+}
+.formulario button[type="submit"]:active{
+  transform: translateY(1px);
+}
+
+@media (max-width: 720px){
+  .formulario{
+    grid-template-columns: 1fr;
+  }
+  .formulario button[type="submit"]{
+    justify-self: stretch; 
+    text-align: center;
+  }
+}z
+
+.formulario button[type="submit"]{
+  grid-column: 1 / -1;           
+  justify-self: center;          
+  margin-top: 18px;              
+  padding: 12px 28px;            
+  font-weight: 700;
+  font-size: 1rem;
+  color: #061318;
+  background: linear-gradient(180deg, var(--btn), var(--btn-2));
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0,194,255,.25);
+  transition: filter .2s, transform .06s, box-shadow .2s;
+}
+
+.formulario button[type="submit"]:hover{
+  filter: brightness(1.06);
+  box-shadow: 0 12px 30px rgba(0,194,255,.32);
+}
+
+.formulario button[type="submit"]:active{
+  transform: translateY(1px);
+}
+
+.formulario .Entrada{
+  margin-bottom: 10px;
 }
