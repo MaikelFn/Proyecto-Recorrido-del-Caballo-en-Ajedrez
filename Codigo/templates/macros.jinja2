@@ -3,34 +3,29 @@
   {% for i in range(Tamaño) %}
     <div class="fila">
       {% for j in range(Tamaño) %}
-        <div class="celda{% if i == Fila and j == Columna %} caballo{% endif %}"></div>
+        {% if i == Fila and j == Columna %}
+          <div class="celda caballo"></div>
+        {% else %}
+          <div class="celda"></div>
+        {% endif %}
       {% endfor %}
     </div>
   {% endfor %}
 </div>
 {% endmacro %}
 
-
 {% macro MostrarMatriz(M) %}
 <div class="matriz">
-  {% for i, fila in enumerate(M) %}
+  {% for fila in (M) %}
     <div class="fila">
-      {% for j, val in enumerate(fila) %}
-        {% set visitada = (val == 0) %}
-        {% set esCaballo = (val == 1) %}
-        <div class="celda
-        {% if visitada %} 
-        visitada
-        {% endif %}
-        {% if esCaballo %} 
-            caballo 
-            {% if visitada %}
-                negro
-            {% else %}
-                blanco
-            {% endif %}
-        {% endif %}">
-        </div>
+      {% for col in (fila) %}
+      {% if col == -1 %}
+        <div class="celda"></div>
+      {% elif col == 0 %}
+        <div class="celda visitada"></div>
+      {% elif col == 1 %}
+        <div class="celda caballo"></div>
+      {% endif %}
       {% endfor %}
     </div>
   {% endfor %}
