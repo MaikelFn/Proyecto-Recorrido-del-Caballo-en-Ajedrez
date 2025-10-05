@@ -1,0 +1,33 @@
+{% macro Tablero(Tamaño, Fila, Columna) %}
+<div class="matriz">
+  {% for i in range(Tamaño) %}
+    <div class="fila">
+      {% for j in range(Tamaño) %}
+        {% if i == Fila and j == Columna %}
+          <div class="celda caballo"></div>
+        {% else %}
+          <div class="celda"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro MostrarMatriz(M) %}
+<div class="matriz">
+  {% for fila in (M) %}
+    <div class="fila">
+      {% for col in (fila) %}
+      {% if col == -1 %}
+        <div class="celda"></div>
+      {% elif col == 0 %}
+        <div class="celda visitada"></div>
+      {% elif col == 1 %}
+        <div class="celda caballo"></div>
+      {% endif %}
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endmacro %}
