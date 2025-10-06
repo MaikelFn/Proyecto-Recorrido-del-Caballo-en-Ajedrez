@@ -1,0 +1,15 @@
+{% import 'macros.jinja2' as macros %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recorrido del Caballo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Ruta del Caballo</h1>
+    {% for paso in Rutas %}
+        {{ macros.MostrarMatriz(paso) }}
+        <hr>
+    {% endfor %}
+</body>
