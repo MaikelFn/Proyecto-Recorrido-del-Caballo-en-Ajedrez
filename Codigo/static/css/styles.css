@@ -28,6 +28,11 @@
   border-color: #bfbfbf;
 }
 
+.celda.retroceso {
+  background: #ff3333;
+  border-color: #ff6666;
+}
+
 .caballo{
   background-position:center;
   background-repeat:no-repeat;
@@ -167,3 +172,4 @@ input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
   margin: 0 auto;
   margin-bottom: 10px;
 }
+

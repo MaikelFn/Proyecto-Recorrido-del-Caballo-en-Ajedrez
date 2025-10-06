@@ -30,7 +30,7 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     for fila in range(Tamaño):
         subLista = []
         for columna in range(Tamaño):
-            subLista.append("N")
+            subLista.append('N')
         tablero.append(subLista)
     tablero[FilaInicial][ColumnaInicial] = 'C'
     return tablero
@@ -53,7 +53,7 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
         Acepta posiciones vacías (-1) y retrocesos ('R') como válidas.
     """
     if 0 <= filaActual < Tamaño and 0 <= colActual < Tamaño:
-        if tablero[filaActual][colActual] == "N" or tablero[filaActual][colActual] == 'R':
+        if tablero[filaActual][colActual] == 'N' or tablero[filaActual][colActual] == 'R':
             return True
     return False
 

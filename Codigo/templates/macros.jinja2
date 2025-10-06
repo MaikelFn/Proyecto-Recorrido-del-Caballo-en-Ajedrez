@@ -19,12 +19,14 @@
   {% for fila in (M) %}
     <div class="fila">
       {% for col in (fila) %}
-      {% if col == -1 %}
+      {% if col == 'N' %}
         <div class="celda"></div>
-      {% elif col == 0 %}
+      {% elif col == 'V' %}
         <div class="celda visitada"></div>
-      {% elif col == 1 %}
+      {% elif col == 'C' %}
         <div class="celda caballo"></div>
+      {% elif col == 'R' %}
+        <div class="celda retroceso"></div>
       {% endif %}
       {% endfor %}
     </div>
