@@ -28,6 +28,11 @@
   border-color: #bfbfbf;
 }
 
+.celda.retroceso {
+  background: #ff3333;
+  border-color: #ff6666;
+}
+
 .caballo{
   background-position:center;
   background-repeat:no-repeat;
@@ -137,7 +142,7 @@ input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
   transition: filter .15s, transform .06s, box-shadow .15s;
 }
 .formulario button:hover{
-  /* brillo suave alrededor del borde */
+
   box-shadow: 0 0 0 6px rgba(0,209,255,0.10), 0 8px 20px rgba(2,10,20,0.35);
   filter: brightness(1.02);
 }
@@ -166,4 +171,32 @@ input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
   max-width: 420px; 
   margin: 0 auto;
   margin-bottom: 10px;
+}
+
+body {
+  text-align: center;
+  padding: 20px;
+}
+
+#btnIniciar {
+  padding: 15px 40px;
+  font-size: 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 0;
+}
+
+#btnIniciar:hover {
+  background-color: #45a049;
+}
+
+#contenedor {
+  display: none;
+}
+
+.paso {
+  margin: 20px 0;
 }

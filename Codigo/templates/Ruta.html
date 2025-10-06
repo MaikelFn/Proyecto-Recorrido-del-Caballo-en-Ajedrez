@@ -8,8 +8,20 @@
 </head>
 <body>
     <h1>Ruta del Caballo</h1>
-    {% for paso in Rutas %}
-        {{ macros.MostrarMatriz(paso) }}
-        <hr>
-    {% endfor %}
+    <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
+    
+    <div id="contenedor">
+        {% for paso in Rutas %}
+        <div class="paso">
+            {{ macros.MostrarMatriz(paso) }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function iniciar() {
+            document.getElementById('btnIniciar').style.display = 'none';
+            document.getElementById('contenedor').style.display = 'block';
+        }
+    </script>
 </body>
