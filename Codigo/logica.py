@@ -6,8 +6,11 @@ Descripción: Lógica para encontrar un camino válido para el caballo en un tab
 Autores: Flores Navarro Maikel Andres, Wynta Rodriguez Tayler Yadir, Lopez Cruz Axel Josue.
 Fecha: 04-10-2025
 """
+import copy
+import time
+from flask import Flask, render_template, request
 
-
+app = Flask(__name__)
 ###########################################################################
 #####################  Funciones Generales  ###############################
 ###########################################################################
@@ -57,14 +60,15 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
             return True
     return False
 
-
-
+def Guardarruta(tablero, Ruta):
+    Ruta.append(copy.deepcopy(tablero))
+    return Ruta
 ###########################################################################
 ########################  Camino Abierto  #################################
 ###########################################################################
 
 
-def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador):
+def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, Ruta):
     """
     Funcion recursiva para encontrar un camino abierto del caballo en el tablero,
     evaluando todas las posibles posiciones a partir de la posición actual.
@@ -92,46 +96,46 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador):
     
     # L Abajo Izquierda: Fila +2, Columna -1
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual-1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Abajo Derecha: Fila +2, Columna +1
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual+1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Arriba Izquierda: Fila -2, Columna -1
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual-1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Arriba Derecha: Fila -2, Columna +1
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual+1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Izquierda Abajo: Fila +1, Columna -2
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual-2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Izquierda Arriba: Fila -1, Columna -2
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual-2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Derecha Abajo: Fila +1, Columna +2
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual+2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
     # L Derecha Arriba: Fila -1, Columna +2
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
 
-def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior):
+def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior, Ruta):
     """
     Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido.
     
@@ -153,13 +157,15 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
     """
     tablero[filaAnterior][colAnterior] = 0
     tablero[filaActual][colActual] = 1
-    """print("Matriz Actual:")
-    for linea in tablero:
-        print(linea)"""
-    if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1):
+    Guardarruta(tablero, Ruta)  # <- guardar estado después de mover
+
+    if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1, Ruta):
         return True
+
+    # backtrack (deshacer movimiento)
     tablero[filaActual][colActual] = -1
     tablero[filaAnterior][colAnterior] = 1
+    Guardarruta(tablero, Ruta)  # <- guardar estado después de deshacer
     return False
 
 
@@ -309,18 +315,15 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
 ###########################################################################
 ########################  Código de Prueba  ###############################
 ###########################################################################
+def PruebaDeRuta():
+    tablero2 = CrearTablero(5, 0, 0)
 
-tablero = CrearTablero(6, 1, 0)
-soluciones = Encontrar_Soluciones(tablero, 1, 0, 6)
-tablero2 = CrearTablero(6, 0, 0)
-
-
-if Encontrar_Camino_Abierto(0, 0, tablero2, 6, 1):
-    print("Se encontró un camino abierto:")
-    for linea in tablero2:
-        print(linea)
-else:
-    print("No se encontró un camino abierto.")
+    Ruta=[]
+    Guardarruta(tablero2, Ruta)
+    if Encontrar_Camino_Abierto(0, 0, tablero2, 5, 1, Ruta):
+        return Ruta
+    else:
+        return None
 
 """if Encontrar_Camino_Cerrado(1, 0, tablero, 6, 1, soluciones):
     print("Se encontró un camino cerrado:")
@@ -328,3 +331,11 @@ else:
         print(linea)
 else:
     print("No se encontró un camino cerrado.")"""
+@app.route('/')
+def main():
+    Rutas = PruebaDeRuta()
+    return render_template('Ruta.html', Rutas=Rutas)
+    
+    
+if __name__ == '__main__':
+    app.run(debug=True)
