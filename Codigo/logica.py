@@ -11,10 +11,6 @@ import time
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
-###########################################################################
-#####################  Funciones Generales  ###############################
-###########################################################################
-
 
 def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     """
@@ -28,15 +24,15 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     Returns:
         list: Matriz que representa el tablero de ajedrez.
     Notes:
-        La matriz se inicializa con -1 en todas las posiciones, excepto en la posición inicial del caballo, que se establece en 0.
+        La matriz se inicializa con -1 en todas las posiciones, excepto en la posición inicial del caballo, que se establece en 'C'.
     """
     tablero = []
     for fila in range(Tamaño):
         subLista = []
         for columna in range(Tamaño):
-            subLista.append(-1)
+            subLista.append("N")
         tablero.append(subLista)
-    tablero[FilaInicial][ColumnaInicial] = 1
+    tablero[FilaInicial][ColumnaInicial] = 'C'
     return tablero
 
 def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
@@ -54,19 +50,16 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
     
     Notes:
         Esta función se utiliza para verificar si el caballo puede moverse a una posición en el tablero.
+        Acepta posiciones vacías (-1) y retrocesos ('R') como válidas.
     """
     if 0 <= filaActual < Tamaño and 0 <= colActual < Tamaño:
-        if tablero[filaActual][colActual] == -1:
+        if tablero[filaActual][colActual] == "N" or tablero[filaActual][colActual] == 'R':
             return True
     return False
 
 def Guardarruta(tablero, Ruta):
     Ruta.append(copy.deepcopy(tablero))
     return Ruta
-###########################################################################
-########################  Camino Abierto  #################################
-###########################################################################
-
 
 def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, Ruta):
     """
@@ -89,47 +82,36 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, 
         
     """
     if contador == Tamaño * Tamaño:
-        """print("Camino Abierto:")
-        for linea in tablero:
-            print(linea)"""
         return True
     
-    # L Abajo Izquierda: Fila +2, Columna -1
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual+2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Abajo Derecha: Fila +2, Columna +1
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual+2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Izquierda: Fila -2, Columna -1
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual-2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Derecha: Fila -2, Columna +1
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual-2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Abajo: Fila +1, Columna -2
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual+1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Arriba: Fila -1, Columna -2
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual-1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Abajo: Fila +1, Columna +2
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual+1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Arriba: Fila -1, Columna +2
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
         if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
@@ -151,28 +133,23 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
         bool: True si se encuentra un camino, False en caso contrario.
     
     Notes:
-        Esta función marca la posición actual del caballo con el contador de movimientos,
-        y si no se encuentra un camino válido, desmarca la posición y retrocede.
+        Esta función marca la posición actual del caballo con 'C' (caballo),
+        la posición anterior con 'V' (visitada), y si no se encuentra un camino válido,
+        marca con 'R' (retroceso) y retrocede.
         
     """
-    tablero[filaAnterior][colAnterior] = 0
-    tablero[filaActual][colActual] = 1
-    Guardarruta(tablero, Ruta)  # <- guardar estado después de mover
-
+    tablero[filaAnterior][colAnterior] = 'V'
+    tablero[filaActual][colActual] = 'C'
+    Guardarruta(tablero, Ruta)
+    
     if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1, Ruta):
         return True
 
-    # backtrack (deshacer movimiento)
-    tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = 1
-    Guardarruta(tablero, Ruta)  # <- guardar estado después de deshacer
+    tablero[filaActual][colActual] = 'R'
+    tablero[filaAnterior][colAnterior] = 'C'
+    Guardarruta(tablero, Ruta)
+    
     return False
-
-
-###########################################################################
-########################  Camino Cerrado  #################################
-###########################################################################
-
 
 def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones):
     """
@@ -197,50 +174,38 @@ def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, 
     """
     
     if contador == Tamaño * Tamaño:
-        # Verificar si el último movimiento puede volver al inicio
         if (filaActual, colActual) in soluciones:
-            """print("Camino Cerrado:")
-            for linea in tablero:
-                print(linea)"""
             return True
         return False
     
-    # L Abajo Izquierda: Fila +2, Columna -1
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Abajo Derecha: Fila +2, Columna +1
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Arriba Izquierda: Fila -2, Columna -1
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Arriba Derecha: Fila -2, Columna +1
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Izquierda Abajo: Fila +1, Columna -2
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Izquierda Arriba: Fila -1, Columna -2
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Derecha Abajo: Fila +1, Columna +2
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
             return True
         
-    # L Derecha Arriba: Fila -1, Columna +2
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
         if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
             return True
@@ -262,16 +227,19 @@ def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contado
         bool: True si se encuentra un camino, False en caso contrario.
     
     Notes:
-        Esta función marca la posición actual del caballo con el contador de movimientos,
-        y si no se encuentra un camino válido, desmarca la posición y retrocede.
+        Esta función marca la posición actual del caballo con 'C' (caballo),
+        la posición anterior con 'V' (visitada), y si no se encuentra un camino válido,
+        marca con 'R' (retroceso) y retrocede.
         
     """
-    tablero[filaActual][colActual] = 1
-    tablero[filaAnterior][colAnterior] = 0
+    tablero[filaActual][colActual] = 'C'
+    tablero[filaAnterior][colAnterior] = 'V'
+    
     if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones):
         return True
-    tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = 1
+    tablero[filaActual][colActual] = 'R'
+    tablero[filaAnterior][colAnterior] = 'C'
+    
     return False
 
 
@@ -311,10 +279,6 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         adyacentes.append((fila - 1, columna + 2))
     return adyacentes
 
-
-###########################################################################
-########################  Código de Prueba  ###############################
-###########################################################################
 def PruebaDeRuta():
     tablero2 = CrearTablero(5, 0, 0)
 
@@ -325,12 +289,6 @@ def PruebaDeRuta():
     else:
         return None
 
-"""if Encontrar_Camino_Cerrado(1, 0, tablero, 6, 1, soluciones):
-    print("Se encontró un camino cerrado:")
-    for linea in tablero:
-        print(linea)
-else:
-    print("No se encontró un camino cerrado.")"""
 @app.route('/')
 def main():
     Rutas = PruebaDeRuta()
@@ -339,3 +297,4 @@ def main():
     
 if __name__ == '__main__':
     app.run(debug=True)
+    
