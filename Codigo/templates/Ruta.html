@@ -11,17 +11,36 @@
     <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
     
     <div id="contenedor">
-        {% for paso in Rutas %}
-        <div class="paso">
-            {{ macros.MostrarMatriz(paso) }}
-        </div>
-        {% endfor %}
+        <div id="paso"></div>
+        <p id="contador"></p>
     </div>
 
     <script>
+        const rutas = [
+            {% for paso in Rutas %}
+            `{{ macros.MostrarMatriz(paso) }}`,
+            {% endfor %}
+        ];
+
+        const VELOCIDAD = 0.5;
+        let i = 0;
+
+        function mostrarSiguientePaso() {
+            i++;
+            if (i < rutas.length) {
+                document.getElementById('paso').innerHTML = rutas[i];
+                document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
+            }
+        }
+
         function iniciar() {
             document.getElementById('btnIniciar').style.display = 'none';
             document.getElementById('contenedor').style.display = 'block';
+            
+            document.getElementById('paso').innerHTML = rutas[i];
+            document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
+
+            setInterval(mostrarSiguientePaso, VELOCIDAD);
         }
     </script>
 </body>
