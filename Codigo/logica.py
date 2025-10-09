@@ -10,6 +10,7 @@ import copy
 import time
 from flask import Flask, render_template, request
 
+
 app = Flask(__name__)
 
 def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
@@ -58,22 +59,6 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
             return True
     return False
 
-def Guardarruta(tablero, Ruta):
-    """
-    Guarda una copia profunda del estado actual del tablero en la lista de rutas.
-    
-    Args:
-        tablero (list): Matriz que representa el tablero de ajedrez.
-        Ruta (list): Lista que almacena los estados del tablero durante el recorrido.
-        
-    Returns:
-        list: Lista actualizada con el nuevo estado del tablero.
-    
-    Notes:
-        Utiliza deepcopy para evitar modificaciones no deseadas en estados anteriores.
-    """
-    Ruta.append(copy.deepcopy(tablero))
-    return Ruta
 
 def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, Ruta):
     """
@@ -133,37 +118,21 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, 
 
 def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior, Ruta):
     """
-    Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido.
+    Realiza el movimiento del caballo en el tablero y guarda la coordenada (filaActual, colActual).
     
     Args:
-        tablero (list): Matriz que representa el tablero de ajedrez.
-        filaActual (int): Fila a la que se mueve el caballo.
-        colActual (int): Columna a la que se mueve el caballo.
-        Tamaño (int): Tamaño del tablero (n x n).
-        contador (int): Contador de movimientos realizados por el caballo.
-        filaAnterior (int): Fila de la posición anterior del caballo.
-        colAnterior (int): Columna de la posición anterior del caballo.
-        Ruta (list): Lista que almacena los estados del tablero durante el recorrido.
-    
-    Returns:
-        bool: True si se encuentra un camino, False en caso contrario.
-    
-    Notes:
-        Esta función marca la posición actual del caballo con 'C' (caballo),
-        la posición anterior con 'V' (visitada), y si no se encuentra un camino válido,
-        marca la posición actual con 'R' (retroceso) y restaura el caballo a la posición anterior.
-        Guarda cada estado del tablero en la lista Ruta.
+        Ruta: Lista que almacena tuplas (fila, columna, tipo) donde tipo es 'A' (avance) o 'R' (retroceso)
     """
     tablero[filaAnterior][colAnterior] = 'V'
     tablero[filaActual][colActual] = 'C'
-    Guardarruta(tablero, Ruta)
+    Ruta.append((filaActual, colActual, 'A'))  # guardar avance
     
     if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1, Ruta):
         return True
 
     tablero[filaActual][colActual] = 'R'
     tablero[filaAnterior][colAnterior] = 'C'
-    Guardarruta(tablero, Ruta)
+    Ruta.append((filaAnterior, colAnterior, 'R'))  # guardar retroceso
     
     return False
 
@@ -295,23 +264,27 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         adyacentes.append((fila - 1, columna + 2))
     return adyacentes
 
-def PruebaDeRuta():
-    tablero2 = CrearTablero(5, 0, 0)
+def PruebaDeRuta(tamaño, fila, columna):
+    tablero2 = CrearTablero(tamaño, fila, columna)
 
-    Ruta=[]
-    Guardarruta(tablero2, Ruta)
-    if Encontrar_Camino_Abierto(0, 0, tablero2, 5, 1, Ruta):
+    Ruta = []
+
+    Ruta.append((fila, columna))
+    if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
         return Ruta
     else:
         return None
 
 @app.route('/')
 def main():
-    
-    Rutas = PruebaDeRuta()
-    return render_template('Ruta.html', Rutas=Rutas)
+    tamaño = 5
+    fila=2
+    columna=0
+    Ruta = PruebaDeRuta(tamaño, fila, columna) or []
+    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño)
     
     
 if __name__ == '__main__':
     app.run(debug=True)
-    
+
+

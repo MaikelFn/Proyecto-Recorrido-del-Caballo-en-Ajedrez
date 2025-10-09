@@ -11,36 +11,51 @@
     <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
     
     <div id="contenedor">
-        <div id="paso"></div>
+        <div id="tablero" class="matriz"></div>
         <p id="contador"></p>
     </div>
 
     <script>
-        const rutas = [
-            {% for paso in Rutas %}
-            `{{ macros.MostrarMatriz(paso) }}`,
-            {% endfor %}
-        ];
+        var tamaño = {{ Tamaño }};
+        var pasos = {{ Ruta|tojson }};
 
-        const VELOCIDAD = 0.5;
-        let i = 0;
+        var tablero = document.getElementById('tablero');
 
-        function mostrarSiguientePaso() {
-            i++;
-            if (i < rutas.length) {
-                document.getElementById('paso').innerHTML = rutas[i];
-                document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
+        var matriz = [];
+        var fila = 0;
+        while (fila < tamaño) {
+            matriz.push([]);
+            fila = fila + 1;
+        }
+
+        function crearTablero() {
+            var Filas = 0;
+            while (Filas < tamaño) {
+                var filaDiv = document.createElement('div');
+                filaDiv.className = 'fila';
+
+                var Columnas = 0;
+                while (Columnas < tamaño) {
+                    var celda = document.createElement('div');
+                    celda.className = 'celda';
+                    filaDiv.appendChild(celda);
+                    matriz[Filas].push(celda);
+                    Columnas = Columnas + 1;
+                }
+
+                tablero.appendChild(filaDiv);
+                Filas = Filas + 1;
             }
         }
 
-        function iniciar() {
-            document.getElementById('btnIniciar').style.display = 'none';
-            document.getElementById('contenedor').style.display = 'block';
-            
-            document.getElementById('paso').innerHTML = rutas[i];
-            document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
+        crearTablero();
 
-            setInterval(mostrarSiguientePaso, VELOCIDAD);
+        if (pasos.length) {
+            var primero = pasos[0];
+            var filaCaballo = primero[0];
+            var colCaballo = primero[1];
+            matriz[filaCaballo][colCaballo].className = 'celda caballo';
         }
     </script>
 </body>
+</html>
