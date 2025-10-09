@@ -8,10 +8,6 @@ Fecha: 04-10-2025
 """
 import copy
 import time
-from flask import Flask, render_template, request
-
-
-app = Flask(__name__)
 
 def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     """
@@ -136,7 +132,7 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
     
     return False
 
-def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones):
+def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones, Ruta):
     """
     Encuentra un camino cerrado del caballo en el tablero, asegurando que el último movimiento
     pueda volver a la posición inicial.
@@ -163,39 +159,39 @@ def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, 
         return False
     
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
     return False
 
-def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones, filaAnterior, colAnterior):
+def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones, filaAnterior, colAnterior, Ruta):
     """
     Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido cerrado.
     
@@ -217,13 +213,15 @@ def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contado
         la posición anterior con 'V' (visitada), y si no se encuentra un camino válido,
         marca la posición actual con 'R' (retroceso) y restaura el caballo a la posición anterior.
     """
-    tablero[filaActual][colActual] = 'C'
     tablero[filaAnterior][colAnterior] = 'V'
+    tablero[filaActual][colActual] = 'C'
+    Ruta.append((filaActual, colActual, 'A'))
     
-    if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones):
+    if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones, Ruta):
         return True
     tablero[filaActual][colActual] = 'R'
     tablero[filaAnterior][colAnterior] = 'C'
+    Ruta.append((filaAnterior, colAnterior, 'R'))
     
     return False
 
@@ -264,27 +262,17 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         adyacentes.append((fila - 1, columna + 2))
     return adyacentes
 
-def PruebaDeRuta(tamaño, fila, columna):
+def generar_ruta_caballo (tamaño, fila, columna, tipo):
     tablero2 = CrearTablero(tamaño, fila, columna)
 
-    Ruta = []
+    Ruta = [(fila, columna, 'A')]
 
-    Ruta.append((fila, columna))
-    if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
-        return Ruta
+    if tipo == 'cerrado':
+        soluciones = Encontrar_Soluciones(tablero2, fila, columna, tamaño)
+        if Encontrar_Camino_Cerrado(fila, columna, tablero2, tamaño, 1, soluciones, Ruta):
+            return Ruta
     else:
-        return None
-
-@app.route('/')
-def main():
-    tamaño = 5
-    fila=0
-    columna=0
-    Ruta = PruebaDeRuta(tamaño, fila, columna)
-    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño)
-    
-    
-if __name__ == '__main__':
-    app.run(debug=True)
-
+        if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
+            return Ruta
+    return []
 
