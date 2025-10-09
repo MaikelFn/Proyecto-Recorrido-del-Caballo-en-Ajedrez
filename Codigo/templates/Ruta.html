@@ -18,7 +18,7 @@
     <script>
         var tamaño = {{ Tamaño }};
         var pasos = {{ Ruta|tojson }};
-        var VELOCIDAD = 0;
+        var VELOCIDAD = 500;
 
         var tablero = document.getElementById('tablero');
         var contador = document.getElementById('contador');
@@ -64,20 +64,27 @@
 
                 if (tipoPaso === 'A') {
                     celdaAnterior.className = 'celda visitada';
+                    celdaAnterior.textContent = numeroPaso;
+                    numeroPaso = numeroPaso + 1;
                 } else {
+                    numeroPaso = Math.max(0, numeroPaso - 1);
                     celdaAnterior.className = 'celda retroceso';
+                    celdaAnterior.textContent = '';
                 }
             }
 
             var celdaDestino = matriz[filaDestino][colDestino];
             celdaDestino.className = 'celda caballo';
+            celdaDestino.textContent = '';
         }
 
         crearTablero();
 
         var indice = 0;
-        var posicionActual = null;
+        var posAnterior = null;
         var intervalo = null;
+        var numeroPaso = 0;
+        var PasosTotal = pasos.length;
 
         function mostrarSiguientePaso() {
             indice = indice + 1;
@@ -98,8 +105,6 @@
             contador.textContent = 'Paso ' + (indice + 1) + ' de ' + PasosTotal;
         }
 
-        var PasosTotal = pasos.length;
-
         function iniciar() {
             if (PasosTotal === 0) {
                 return;
@@ -109,6 +114,7 @@
             document.getElementById('contenedor').style.display = 'block';
 
             var primerPaso = pasos[0];
+            numeroPaso = 0;
             aplicarPaso(primerPaso, null);
 
             posAnterior = {

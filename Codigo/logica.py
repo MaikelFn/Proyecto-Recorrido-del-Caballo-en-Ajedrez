@@ -278,9 +278,9 @@ def PruebaDeRuta(tamaño, fila, columna):
 @app.route('/')
 def main():
     tamaño = 5
-    fila=2
+    fila=0
     columna=0
-    Ruta = PruebaDeRuta(tamaño, fila, columna) or []
+    Ruta = PruebaDeRuta(tamaño, fila, columna)
     return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño)
     
     
