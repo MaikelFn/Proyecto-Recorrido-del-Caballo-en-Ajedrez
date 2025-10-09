@@ -11,36 +11,121 @@
     <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
     
     <div id="contenedor">
-        <div id="paso"></div>
+        <div id="tablero" class="matriz"></div>
         <p id="contador"></p>
     </div>
 
     <script>
-        const rutas = [
-            {% for paso in Rutas %}
-            `{{ macros.MostrarMatriz(paso) }}`,
-            {% endfor %}
-        ];
+        var tamaño = {{ Tamaño }};
+        var pasos = {{ Ruta|tojson }};
+        var VELOCIDAD = 500;
 
-        const VELOCIDAD = 0.5;
-        let i = 0;
+        var tablero = document.getElementById('tablero');
+        var contador = document.getElementById('contador');
+        
+        var matriz = [];
+        var fila = 0;
+        while (fila < tamaño) {
+            matriz.push([]);
+            fila = fila + 1;
+        }
 
-        function mostrarSiguientePaso() {
-            i++;
-            if (i < rutas.length) {
-                document.getElementById('paso').innerHTML = rutas[i];
-                document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
+        function crearTablero() {
+            var Filas = 0;
+            while (Filas < tamaño) {
+                var filaDiv = document.createElement('div');
+                filaDiv.className = 'fila';
+
+                var Columnas = 0;
+                while (Columnas < tamaño) {
+                    var celda = document.createElement('div');
+                    celda.className = 'celda';
+
+                    filaDiv.appendChild(celda);
+                    matriz[Filas].push(celda);
+
+                    Columnas = Columnas + 1;
+                }
+
+                tablero.appendChild(filaDiv);
+                Filas = Filas + 1;
             }
         }
 
+        function aplicarPaso(paso, anterior) {
+            var filaDestino = paso[0];
+            var colDestino = paso[1];
+            var tipoPaso = paso[2];
+
+            if (anterior !== null) {
+                var filaAnterior = anterior.fila;
+                var colAnterior = anterior.columna;
+                var celdaAnterior = matriz[filaAnterior][colAnterior];
+
+                if (tipoPaso === 'A') {
+                    celdaAnterior.className = 'celda visitada';
+                    celdaAnterior.textContent = numeroPaso;
+                    numeroPaso = numeroPaso + 1;
+                } else {
+                    numeroPaso = Math.max(0, numeroPaso - 1);
+                    celdaAnterior.className = 'celda retroceso';
+                    celdaAnterior.textContent = '';
+                }
+            }
+
+            var celdaDestino = matriz[filaDestino][colDestino];
+            celdaDestino.className = 'celda caballo';
+            celdaDestino.textContent = '';
+        }
+
+        crearTablero();
+
+        var indice = 0;
+        var posAnterior = null;
+        var intervalo = null;
+        var numeroPaso = 0;
+        var PasosTotal = pasos.length;
+
+        function mostrarSiguientePaso() {
+            indice = indice + 1;
+
+            if (indice >= PasosTotal) {
+                clearInterval(intervalo);
+                return;
+            }
+
+            var pasoActual = pasos[indice];
+            aplicarPaso(pasoActual, posAnterior);
+
+            posAnterior = {
+                fila: pasoActual[0],
+                columna: pasoActual[1]
+            };
+
+            contador.textContent = 'Paso ' + (indice + 1) + ' de ' + PasosTotal;
+        }
+
         function iniciar() {
+            if (PasosTotal === 0) {
+                return;
+            }
+
             document.getElementById('btnIniciar').style.display = 'none';
             document.getElementById('contenedor').style.display = 'block';
-            
-            document.getElementById('paso').innerHTML = rutas[i];
-            document.getElementById('contador').textContent = `Paso ${i + 1} de ${rutas.length}`;
 
-            setInterval(mostrarSiguientePaso, VELOCIDAD);
+            var primerPaso = pasos[0];
+            numeroPaso = 0;
+            aplicarPaso(primerPaso, null);
+
+            posAnterior = {
+                fila: primerPaso[0],
+                columna: primerPaso[1]
+            };
+            
+            contador.textContent = 'Paso 1 de ' + PasosTotal;
+
+            intervalo = setInterval(mostrarSiguientePaso, VELOCIDAD);
         }
     </script>
 </body>
+</html>
