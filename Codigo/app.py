@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request
+from logica import generar_ruta_caballo 
 
 app = Flask(__name__)
 
@@ -14,10 +15,14 @@ def main():
         print(f"Tamaño: {tamaño}, Fila: {fila}, Columna: {columna}, Recorrido: {Recorrido}")
 
         if Recorrido == 'abierto':
-            pass
+            tipo = 'abierto'
+            Ruta = generar_ruta_caballo (tamaño, fila, columna, tipo) or []
+            return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo)
 
         if Recorrido == 'cerrado':
-            pass
+            tipo = 'cerrado'
+            Ruta = generar_ruta_caballo (tamaño, fila, columna, tipo) or []
+            return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo)
 
         return render_template('Tablero.html', tamaño=tamaño, fila=fila, columna=columna)
     return render_template('Entradas.html')
