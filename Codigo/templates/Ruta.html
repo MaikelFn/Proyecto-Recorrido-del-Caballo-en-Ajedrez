@@ -9,7 +9,7 @@
 <body>
     <h1>Ruta del Caballo</h1>
     <button id="btnIniciar" onclick="iniciar()">Iniciar Animación</button>
-    <button id="btnVerFinal" onclick="mostrarTableroFinal()">Ver Tablero Final</button>
+    <button id="btnVerFinal" onclick="mostrarTableroFinal()" style="display: none;">Ver Tablero Final</button>
     
     <div id="contenedor">
         <div id="tablero" class="matriz"></div>
@@ -83,21 +83,16 @@
                 return;
             }
 
-            // Detener la animación si está corriendo
             if (intervalo !== null) {
                 clearInterval(intervalo);
             }
 
-            document.getElementById('btnIniciar').style.display = 'none';
             document.getElementById('btnVerFinal').style.display = 'none';
-            document.getElementById('contenedor').style.display = 'block';
 
             crearTablero();
 
-            // El tablero final está en la última posición de la lista de pasos
             var tableroFinal = pasos[PasosTotal - 1];
             
-            // Recorrer todo el tablero final y mostrar los números
             var fila = 0;
             while (fila < tamaño) {
                 var columna = 0;
@@ -106,7 +101,6 @@
                     var celda = matriz[fila][columna];
                     
                     if (valorCelda === 'C') {
-                        // Mostrar el caballo en la última posición
                         celda.className = 'celda caballo';
                     } else if (valorCelda !== -1) {
                         celda.className = 'celda visitada';
@@ -137,6 +131,7 @@
 
             if (indice >= PasosTotal) {
                 clearInterval(intervalo);
+                document.getElementById('btnVerFinal').style.display = 'none';
                 return;
             }
 
@@ -157,7 +152,7 @@
             }
 
             document.getElementById('btnIniciar').style.display = 'none';
-            document.getElementById('btnVerFinal').style.display = 'none';
+            document.getElementById('btnVerFinal').style.display = 'inline-block';
             document.getElementById('contenedor').style.display = 'block';
 
             crearTablero();
