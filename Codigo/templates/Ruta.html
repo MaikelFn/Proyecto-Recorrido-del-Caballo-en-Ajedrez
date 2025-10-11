@@ -10,6 +10,7 @@
     <h1>Ruta del Caballo</h1>
     <button id="btnIniciar" onclick="iniciar()">Iniciar Animación</button>
     <button id="btnVerFinal" onclick="mostrarTableroFinal()" style="display: none;">Ver Tablero Final</button>
+    <a href="{{ url_for('reiniciar') }}"><button id="btnReiniciar" style="display: none;">Reiniciar</button></a>
     
     <div id="contenedor">
         <div id="tablero" class="matriz"></div>
@@ -88,6 +89,7 @@
             }
 
             document.getElementById('btnVerFinal').style.display = 'none';
+            document.getElementById('btnReiniciar').style.display = 'inline-block';
 
             crearTablero();
 
@@ -132,6 +134,7 @@
             if (indice >= PasosTotal) {
                 clearInterval(intervalo);
                 document.getElementById('btnVerFinal').style.display = 'none';
+                document.getElementById('btnReiniciar').style.display = 'inline-block';
                 return;
             }
 
