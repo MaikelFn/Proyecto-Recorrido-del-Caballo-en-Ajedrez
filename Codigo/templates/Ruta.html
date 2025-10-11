@@ -8,10 +8,7 @@
 </head>
 <body>
     <h1>Ruta del Caballo</h1>
-    <button id="btnIniciar" onclick="iniciar()">Iniciar Animación</button>
-    <button id="btnVerFinal" onclick="mostrarTableroFinal()" style="display: none;">Ver Tablero Final</button>
-    <a href="{{ url_for('reiniciar') }}"><button id="btnReiniciar" style="display: none;">Reiniciar</button></a>
-    <a href="{{ url_for('inicio') }}"><button id="btnInicio">Inicio</button></a>
+    <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
     
     <div id="contenedor">
         <div id="tablero" class="matriz"></div>
@@ -27,14 +24,15 @@
         var contador = document.getElementById('contador');
         
         var matriz = [];
+        var fila = 0;
+        while (fila < tamaño) {
+            matriz.push([]);
+            fila = fila + 1;
+        }
 
         function crearTablero() {
-            tablero.innerHTML = '';
-            matriz = [];
-            
             var Filas = 0;
             while (Filas < tamaño) {
-                matriz.push([]);
                 var filaDiv = document.createElement('div');
                 filaDiv.className = 'fila';
 
@@ -80,47 +78,6 @@
             celdaDestino.textContent = '';
         }
 
-        function mostrarTableroFinal() {
-            if (PasosTotal === 0) {
-                return;
-            }
-
-            if (intervalo !== null) {
-                clearInterval(intervalo);
-            }
-
-            document.getElementById('btnVerFinal').style.display = 'none';
-            document.getElementById('btnReiniciar').style.display = 'inline-block';
-
-            crearTablero();
-
-            var tableroFinal = pasos[PasosTotal - 1];
-            
-            var fila = 0;
-            while (fila < tamaño) {
-                var columna = 0;
-                while (columna < tamaño) {
-                    var valorCelda = tableroFinal[fila][columna];
-                    var celda = matriz[fila][columna];
-                    
-                    if (valorCelda === 'C') {
-                        celda.className = 'celda caballo';
-                    } else if (valorCelda !== -1) {
-                        celda.className = 'celda visitada';
-                        celda.textContent = valorCelda;
-                    } else {
-                        celda.className = 'celda';
-                        celda.textContent = '';
-                    }
-                    
-                    columna = columna + 1;
-                }
-                fila = fila + 1;
-            }
-
-            contador.textContent = 'Tablero Final - ' + (tamaño * tamaño) + ' movimientos';
-        }
-
         crearTablero();
 
         var indice = 0;
@@ -134,8 +91,6 @@
 
             if (indice >= PasosTotal) {
                 clearInterval(intervalo);
-                document.getElementById('btnVerFinal').style.display = 'none';
-                document.getElementById('btnReiniciar').style.display = 'inline-block';
                 return;
             }
 
@@ -156,10 +111,7 @@
             }
 
             document.getElementById('btnIniciar').style.display = 'none';
-            document.getElementById('btnVerFinal').style.display = 'inline-block';
             document.getElementById('contenedor').style.display = 'block';
-
-            crearTablero();
 
             var primerPaso = pasos[0];
             numeroPaso = 0;

@@ -28,9 +28,9 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     for fila in range(Tamaño):
         subLista = []
         for columna in range(Tamaño):
-            subLista.append(-1)
+            subLista.append('N')
         tablero.append(subLista)
-    tablero[FilaInicial][ColumnaInicial] = 0
+    tablero[FilaInicial][ColumnaInicial] = 'C'
     return tablero
 
 def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
@@ -48,10 +48,10 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
     
     Notes:
         Esta función se utiliza para verificar si el caballo puede moverse a una posición en el tablero.
-        Acepta posiciones no visitadas (-1) como válidas.
+        Acepta posiciones no visitadas ('N') y retrocesos ('R') como válidas.
     """
     if 0 <= filaActual < Tamaño and 0 <= colActual < Tamaño:
-        if tablero[filaActual][colActual] == -1:
+        if tablero[filaActual][colActual] == 'N' or tablero[filaActual][colActual] == 'R':
             return True
     return False
 
@@ -77,9 +77,6 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, 
         pero no necesariamente regresa a la posición inicial.
     """
     if contador == Tamaño * Tamaño:
-        tablero[filaActual][colActual] = 'C'  # Marcar la última posición con 'C'
-        Ruta.append(copy.deepcopy(tablero))
-        tablero[filaActual][colActual] = contador - 1  # Restaurar el número
         return True
     
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
@@ -118,22 +115,22 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, 
 
 def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior, Ruta):
     """
-    Realiza el movimiento del caballo en el tablero y guarda el número de movimiento.
+    Realiza el movimiento del caballo en el tablero y guarda la coordenada (filaActual, colActual).
     
     Args:
         Ruta: Lista que almacena tuplas (fila, columna, tipo) donde tipo es 'A' (avance) o 'R' (retroceso)
     """
-    tablero[filaAnterior][colAnterior] = contador - 1
-    tablero[filaActual][colActual] = contador
-    Ruta.append((filaActual, colActual, 'A'))
+    tablero[filaAnterior][colAnterior] = 'V'
+    tablero[filaActual][colActual] = 'C'
+    Ruta.append((filaActual, colActual, 'A'))  # guardar avance
     
     if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1, Ruta):
         return True
 
-    tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = contador - 1
-    Ruta.append((filaAnterior, colAnterior, 'R'))
-
+    tablero[filaActual][colActual] = 'R'
+    tablero[filaAnterior][colAnterior] = 'C'
+    Ruta.append((filaAnterior, colAnterior, 'R'))  # guardar retroceso
+    
     return False
 
 def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones, Ruta):
@@ -159,8 +156,6 @@ def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, 
     
     if contador == Tamaño * Tamaño:
         if (filaActual, colActual) in soluciones:
-            tablero[filaActual][colActual] = 'C'
-            Ruta.append(copy.deepcopy(tablero))
             return True
         return False
     
@@ -199,7 +194,7 @@ def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, 
 
 def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones, filaAnterior, colAnterior, Ruta):
     """
-    Realiza el movimiento del caballo en el tablero y guarda el número de movimiento.
+    Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido cerrado.
     
     Args:
         tablero (list): Matriz que representa el tablero de ajedrez.
@@ -215,16 +210,18 @@ def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contado
         bool: True si se encuentra un camino cerrado, False en caso contrario.
     
     Notes:
-        Esta función guarda el número de movimiento en cada posición visitada del tablero.
+        Esta función marca la posición actual del caballo con 'C' (caballo),
+        la posición anterior con 'V' (visitada), y si no se encuentra un camino válido,
+        marca la posición actual con 'R' (retroceso) y restaura el caballo a la posición anterior.
     """
-    tablero[filaAnterior][colAnterior] = contador - 1  # guardar el número del movimiento anterior
-    tablero[filaActual][colActual] = contador  # guardar el número del movimiento actual
+    tablero[filaAnterior][colAnterior] = 'V'
+    tablero[filaActual][colActual] = 'C'
     Ruta.append((filaActual, colActual, 'A'))
     
     if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones, Ruta):
         return True
-    tablero[filaActual][colActual] = -1  # restaurar como no visitada
-    tablero[filaAnterior][colAnterior] = contador - 1  # restaurar el número anterior
+    tablero[filaActual][colActual] = 'R'
+    tablero[filaAnterior][colAnterior] = 'C'
     Ruta.append((filaAnterior, colAnterior, 'R'))
     
     return False
@@ -279,3 +276,4 @@ def generar_ruta_caballo (tamaño, fila, columna, tipo):
         if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
             return Ruta
     return []
+
