@@ -111,6 +111,7 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, 
         if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
+    return False
 
 def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior, Ruta):
     """
