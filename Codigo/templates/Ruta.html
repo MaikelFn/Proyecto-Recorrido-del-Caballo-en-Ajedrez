@@ -1,0 +1,180 @@
+{% import 'macros.jinja2' as macros %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Recorrido del Caballo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Ruta del Caballo</h1>
+    <button id="btnIniciar" onclick="iniciar()">Iniciar Animación</button>
+    <button id="btnVerFinal" onclick="mostrarTableroFinal()">Ver Tablero Final</button>
+    
+    <div id="contenedor">
+        <div id="tablero" class="matriz"></div>
+        <p id="contador"></p>
+    </div>
+
+    <script>
+        var tamaño = {{ Tamaño }};
+        var pasos = {{ Ruta|tojson }};
+        var VELOCIDAD = 500;
+
+        var tablero = document.getElementById('tablero');
+        var contador = document.getElementById('contador');
+        
+        var matriz = [];
+
+        function crearTablero() {
+            tablero.innerHTML = '';
+            matriz = [];
+            
+            var Filas = 0;
+            while (Filas < tamaño) {
+                matriz.push([]);
+                var filaDiv = document.createElement('div');
+                filaDiv.className = 'fila';
+
+                var Columnas = 0;
+                while (Columnas < tamaño) {
+                    var celda = document.createElement('div');
+                    celda.className = 'celda';
+
+                    filaDiv.appendChild(celda);
+                    matriz[Filas].push(celda);
+
+                    Columnas = Columnas + 1;
+                }
+
+                tablero.appendChild(filaDiv);
+                Filas = Filas + 1;
+            }
+        }
+
+        function aplicarPaso(paso, anterior) {
+            var filaDestino = paso[0];
+            var colDestino = paso[1];
+            var tipoPaso = paso[2];
+
+            if (anterior !== null) {
+                var filaAnterior = anterior.fila;
+                var colAnterior = anterior.columna;
+                var celdaAnterior = matriz[filaAnterior][colAnterior];
+
+                if (tipoPaso === 'A') {
+                    celdaAnterior.className = 'celda visitada';
+                    celdaAnterior.textContent = numeroPaso;
+                    numeroPaso = numeroPaso + 1;
+                } else {
+                    numeroPaso = Math.max(0, numeroPaso - 1);
+                    celdaAnterior.className = 'celda retroceso';
+                    celdaAnterior.textContent = '';
+                }
+            }
+
+            var celdaDestino = matriz[filaDestino][colDestino];
+            celdaDestino.className = 'celda caballo';
+            celdaDestino.textContent = '';
+        }
+
+        function mostrarTableroFinal() {
+            if (PasosTotal === 0) {
+                return;
+            }
+
+            // Detener la animación si está corriendo
+            if (intervalo !== null) {
+                clearInterval(intervalo);
+            }
+
+            document.getElementById('btnIniciar').style.display = 'none';
+            document.getElementById('btnVerFinal').style.display = 'none';
+            document.getElementById('contenedor').style.display = 'block';
+
+            crearTablero();
+
+            // El tablero final está en la última posición de la lista de pasos
+            var tableroFinal = pasos[PasosTotal - 1];
+            
+            // Recorrer todo el tablero final y mostrar los números
+            var fila = 0;
+            while (fila < tamaño) {
+                var columna = 0;
+                while (columna < tamaño) {
+                    var valorCelda = tableroFinal[fila][columna];
+                    var celda = matriz[fila][columna];
+                    
+                    if (valorCelda === 'C') {
+                        // Mostrar el caballo en la última posición
+                        celda.className = 'celda caballo';
+                    } else if (valorCelda !== -1) {
+                        celda.className = 'celda visitada';
+                        celda.textContent = valorCelda;
+                    } else {
+                        celda.className = 'celda';
+                        celda.textContent = '';
+                    }
+                    
+                    columna = columna + 1;
+                }
+                fila = fila + 1;
+            }
+
+            contador.textContent = 'Tablero Final - ' + (tamaño * tamaño) + ' movimientos';
+        }
+
+        crearTablero();
+
+        var indice = 0;
+        var posAnterior = null;
+        var intervalo = null;
+        var numeroPaso = 0;
+        var PasosTotal = pasos.length;
+
+        function mostrarSiguientePaso() {
+            indice = indice + 1;
+
+            if (indice >= PasosTotal) {
+                clearInterval(intervalo);
+                return;
+            }
+
+            var pasoActual = pasos[indice];
+            aplicarPaso(pasoActual, posAnterior);
+
+            posAnterior = {
+                fila: pasoActual[0],
+                columna: pasoActual[1]
+            };
+
+            contador.textContent = 'Paso ' + (indice + 1) + ' de ' + PasosTotal;
+        }
+
+        function iniciar() {
+            if (PasosTotal === 0) {
+                return;
+            }
+
+            document.getElementById('btnIniciar').style.display = 'none';
+            document.getElementById('btnVerFinal').style.display = 'none';
+            document.getElementById('contenedor').style.display = 'block';
+
+            crearTablero();
+
+            var primerPaso = pasos[0];
+            numeroPaso = 0;
+            aplicarPaso(primerPaso, null);
+
+            posAnterior = {
+                fila: primerPaso[0],
+                columna: primerPaso[1]
+            };
+            
+            contador.textContent = 'Paso 1 de ' + PasosTotal;
+
+            intervalo = setInterval(mostrarSiguientePaso, VELOCIDAD);
+        }
+    </script>
+</body>
+</html>

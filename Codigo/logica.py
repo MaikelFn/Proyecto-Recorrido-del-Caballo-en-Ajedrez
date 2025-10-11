@@ -6,12 +6,8 @@ Descripción: Lógica para encontrar un camino válido para el caballo en un tab
 Autores: Flores Navarro Maikel Andres, Wynta Rodriguez Tayler Yadir, Lopez Cruz Axel Josue.
 Fecha: 04-10-2025
 """
-
-
-###########################################################################
-#####################  Funciones Generales  ###############################
-###########################################################################
-
+import copy
+import time
 
 def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     """
@@ -25,7 +21,8 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     Returns:
         list: Matriz que representa el tablero de ajedrez.
     Notes:
-        La matriz se inicializa con -1 en todas las posiciones, excepto en la posición inicial del caballo, que se establece en 0.
+        La matriz se inicializa con 'N' (no visitada) en todas las posiciones, 
+        excepto en la posición inicial del caballo, que se establece en 'C' (caballo).
     """
     tablero = []
     for fila in range(Tamaño):
@@ -33,7 +30,7 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
         for columna in range(Tamaño):
             subLista.append(-1)
         tablero.append(subLista)
-    tablero[FilaInicial][ColumnaInicial] = 1
+    tablero[FilaInicial][ColumnaInicial] = 0
     return tablero
 
 def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
@@ -51,6 +48,7 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
     
     Notes:
         Esta función se utiliza para verificar si el caballo puede moverse a una posición en el tablero.
+        Acepta posiciones no visitadas (-1) como válidas.
     """
     if 0 <= filaActual < Tamaño and 0 <= colActual < Tamaño:
         if tablero[filaActual][colActual] == -1:
@@ -58,13 +56,7 @@ def Movimiento_Valido(tablero, filaActual, colActual, Tamaño):
     return False
 
 
-
-###########################################################################
-########################  Camino Abierto  #################################
-###########################################################################
-
-
-def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador):
+def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador, Ruta):
     """
     Funcion recursiva para encontrar un camino abierto del caballo en el tablero,
     evaluando todas las posibles posiciones a partir de la posición actual.
@@ -75,100 +67,76 @@ def Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador):
         tablero (list): Matriz que representa el tablero de ajedrez.
         Tamaño (int): Tamaño del tablero (n x n).
         contador (int): Contador de movimientos realizados por el caballo.
-        
+        Ruta (list): Lista que almacena los estados del tablero durante el recorrido.
     
     Returns:
         bool: True si se encuentra un camino abierto, False en caso contrario.
     
     Notes:
-        Un camino abierto es aquel en el que el caballo no necesariamente regresa a la posición inicial.
-        
+        Un camino abierto es aquel en el que el caballo visita todas las casillas del tablero
+        pero no necesariamente regresa a la posición inicial.
     """
     if contador == Tamaño * Tamaño:
-        """print("Camino Abierto:")
-        for linea in tablero:
-            print(linea)"""
+        tablero[filaActual][colActual] = 'C'  # Marcar la última posición con 'C'
+        Ruta.append(copy.deepcopy(tablero))
+        tablero[filaActual][colActual] = contador - 1  # Restaurar el número
         return True
     
-    # L Abajo Izquierda: Fila +2, Columna -1
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual-1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Abajo Derecha: Fila +2, Columna +1
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual+1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Izquierda: Fila -2, Columna -1
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual-1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual-1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Derecha: Fila -2, Columna +1
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual+1, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-2, colActual+1, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Abajo: Fila +1, Columna -2
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual-2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Arriba: Fila -1, Columna -2
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual-2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual-2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Abajo: Fila +1, Columna +2
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual+2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual+1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Arriba: Fila -1, Columna +2
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
-        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual):
+        if realizar_movimiento_Abierto(tablero, filaActual-1, colActual+2, Tamaño, contador, filaActual, colActual, Ruta):
             return True
         
-
-def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior):
-    """
-    Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido.
-    
-    Args:
-        tablero (list): Matriz que representa el tablero de ajedrez.
-        filaActual (int): Fila actual del caballo.
-        colActual (int): Columna actual del caballo.
-        Tamaño (int): Tamaño del tablero (n x n).
-        contador (int): Contador de movimientos realizados por el caballo.
-        
-    
-    Returns:
-        bool: True si se encuentra un camino, False en caso contrario.
-    
-    Notes:
-        Esta función marca la posición actual del caballo con el contador de movimientos,
-        y si no se encuentra un camino válido, desmarca la posición y retrocede.
-        
-    """
-    tablero[filaAnterior][colAnterior] = 0
-    tablero[filaActual][colActual] = 1
-    """print("Matriz Actual:")
-    for linea in tablero:
-        print(linea)"""
-    if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1):
-        return True
-    tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = 1
     return False
 
+def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contador, filaAnterior, colAnterior, Ruta):
+    """
+    Realiza el movimiento del caballo en el tablero y guarda el número de movimiento.
+    
+    Args:
+        Ruta: Lista que almacena tuplas (fila, columna, tipo) donde tipo es 'A' (avance) o 'R' (retroceso)
+    """
+    tablero[filaAnterior][colAnterior] = contador - 1
+    tablero[filaActual][colActual] = contador
+    Ruta.append((filaActual, colActual, 'A'))
+    
+    if Encontrar_Camino_Abierto(filaActual, colActual, tablero, Tamaño, contador + 1, Ruta):
+        return True
 
-###########################################################################
-########################  Camino Cerrado  #################################
-###########################################################################
+    tablero[filaActual][colActual] = -1
+    tablero[filaAnterior][colAnterior] = contador - 1
+    Ruta.append((filaAnterior, colAnterior, 'R'))
 
+    return False
 
-def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones):
+def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, soluciones, Ruta):
     """
     Encuentra un camino cerrado del caballo en el tablero, asegurando que el último movimiento
     pueda volver a la posición inicial.
@@ -179,99 +147,92 @@ def Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador, 
         tablero (list): Matriz que representa el tablero de ajedrez.
         Tamaño (int): Tamaño del tablero (n x n).
         contador (int): Contador de movimientos realizados por el caballo.
-        soluciones (list): Lista de posiciones adyacentes a la posición inicial.        
+        soluciones (list): Lista de tuplas con las posiciones adyacentes a la posición inicial.
     
     Returns:
         bool: True si se encuentra un camino cerrado, False en caso contrario.
     
     Notes:
-        Un camino cerrado es aquel en el que el caballo puede regresar a la posición inicial
-        después de completar todos los movimientos es decir termina en una posición adyacente a la inicial.
-        
+        Un camino cerrado es aquel en el que el caballo visita todas las casillas del tablero
+        y termina en una posición adyacente a la inicial, desde la cual puede regresar con un movimiento válido.
     """
     
     if contador == Tamaño * Tamaño:
-        # Verificar si el último movimiento puede volver al inicio
         if (filaActual, colActual) in soluciones:
-            """print("Camino Cerrado:")
-            for linea in tablero:
-                print(linea)"""
+            tablero[filaActual][colActual] = 'C'
+            Ruta.append(copy.deepcopy(tablero))
             return True
         return False
     
-    # L Abajo Izquierda: Fila +2, Columna -1
     if Movimiento_Valido(tablero, filaActual+2, colActual-1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Abajo Derecha: Fila +2, Columna +1
     if Movimiento_Valido(tablero, filaActual+2, colActual+1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Izquierda: Fila -2, Columna -1
     if Movimiento_Valido(tablero, filaActual-2, colActual-1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual-1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Arriba Derecha: Fila -2, Columna +1
     if Movimiento_Valido(tablero, filaActual-2, colActual+1, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-2, colActual+1, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Abajo: Fila +1, Columna -2
     if Movimiento_Valido(tablero, filaActual+1, colActual-2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Izquierda Arriba: Fila -1, Columna -2
     if Movimiento_Valido(tablero, filaActual-1, colActual-2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual-2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Abajo: Fila +1, Columna +2
     if Movimiento_Valido(tablero, filaActual+1, colActual+2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual+1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
         
-    # L Derecha Arriba: Fila -1, Columna +2
     if Movimiento_Valido(tablero, filaActual-1, colActual+2, Tamaño):
-        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual):
+        if Realizar_Movimiento_Cerrado(tablero, filaActual-1, colActual+2, Tamaño, contador, soluciones, filaActual, colActual, Ruta):
             return True
     return False
 
-def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones, filaAnterior, colAnterior):
+def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contador, soluciones, filaAnterior, colAnterior, Ruta):
     """
-    Realiza el movimiento del caballo en el tablero y llama recursivamente a la función para continuar el recorrido.
+    Realiza el movimiento del caballo en el tablero y guarda el número de movimiento.
     
     Args:
         tablero (list): Matriz que representa el tablero de ajedrez.
-        filaActual (int): Fila actual del caballo.
-        colActual (int): Columna actual del caballo.
+        filaActual (int): Fila a la que se mueve el caballo.
+        colActual (int): Columna a la que se mueve el caballo.
         Tamaño (int): Tamaño del tablero (n x n).
         contador (int): Contador de movimientos realizados por el caballo.
-        soluciones (list): Lista de posiciones adyacentes a la posición inicial.
-        
+        soluciones (list): Lista de tuplas con las posiciones adyacentes a la posición inicial.
+        filaAnterior (int): Fila de la posición anterior del caballo.
+        colAnterior (int): Columna de la posición anterior del caballo.
+    
     Returns:
-        bool: True si se encuentra un camino, False en caso contrario.
+        bool: True si se encuentra un camino cerrado, False en caso contrario.
     
     Notes:
-        Esta función marca la posición actual del caballo con el contador de movimientos,
-        y si no se encuentra un camino válido, desmarca la posición y retrocede.
-        
+        Esta función guarda el número de movimiento en cada posición visitada del tablero.
     """
-    tablero[filaActual][colActual] = 1
-    tablero[filaAnterior][colAnterior] = 0
-    if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones):
+    tablero[filaAnterior][colAnterior] = contador - 1  # guardar el número del movimiento anterior
+    tablero[filaActual][colActual] = contador  # guardar el número del movimiento actual
+    Ruta.append((filaActual, colActual, 'A'))
+    
+    if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones, Ruta):
         return True
-    tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = 1
+    tablero[filaActual][colActual] = -1  # restaurar como no visitada
+    tablero[filaAnterior][colAnterior] = contador - 1  # restaurar el número anterior
+    Ruta.append((filaAnterior, colAnterior, 'R'))
+    
     return False
 
 
 def Encontrar_Soluciones(tablero, fila, columna, tamaño):
     """
-    Encuentra todas las soluciones posibles para el recorrido cerrado del caballo en el tablero(es decir las adyacentes a la posición inicial).
+    Encuentra todas las posiciones válidas adyacentes a la posición inicial del caballo.
     
     Args:
         tablero (list): Matriz que representa el tablero de ajedrez.
@@ -280,11 +241,11 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         tamaño (int): Tamaño del tablero (n x n).
         
     Returns:
-        list: Lista de tuplas con las posiciones adyacentes a la posición inicial.
+        list: Lista de tuplas con las posiciones adyacentes válidas a la posición inicial.
     
     Notes:
-        Esta función evalúa todas las posibles posiciones a las que el caballo puede moverse desde la posición inicial.
-        
+        Esta función evalúa los 8 movimientos posibles del caballo desde la posición inicial
+        y retorna aquellas posiciones que son válidas (dentro del tablero y no visitadas).
     """
     adyacentes = []
     if Movimiento_Valido(tablero, fila + 2, columna - 1, tamaño):
@@ -305,26 +266,16 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         adyacentes.append((fila - 1, columna + 2))
     return adyacentes
 
+def generar_ruta_caballo (tamaño, fila, columna, tipo):
+    tablero2 = CrearTablero(tamaño, fila, columna)
 
-###########################################################################
-########################  Código de Prueba  ###############################
-###########################################################################
+    Ruta = [(fila, columna, 'A')]
 
-tablero = CrearTablero(6, 1, 0)
-soluciones = Encontrar_Soluciones(tablero, 1, 0, 6)
-tablero2 = CrearTablero(6, 0, 0)
-
-
-if Encontrar_Camino_Abierto(0, 0, tablero2, 6, 1):
-    print("Se encontró un camino abierto:")
-    for linea in tablero2:
-        print(linea)
-else:
-    print("No se encontró un camino abierto.")
-
-"""if Encontrar_Camino_Cerrado(1, 0, tablero, 6, 1, soluciones):
-    print("Se encontró un camino cerrado:")
-    for linea in tablero:
-        print(linea)
-else:
-    print("No se encontró un camino cerrado.")"""
+    if tipo == 'cerrado':
+        soluciones = Encontrar_Soluciones(tablero2, fila, columna, tamaño)
+        if Encontrar_Camino_Cerrado(fila, columna, tablero2, tamaño, 1, soluciones, Ruta):
+            return Ruta
+    else:
+        if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
+            return Ruta
+    return []
