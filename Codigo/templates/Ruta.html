@@ -8,6 +8,18 @@
 </head>
 <body>
     <h1>Ruta del Caballo</h1>
+    
+    {% if Ruta|length == 0 %}
+    <div class="mensaje-sin-solucion">
+        <div class="icono-error">⚠️</div>
+        <h2>No se encontró una ruta válida</h2>
+        <p>No existe un recorrido {{ Tipo }} para esta configuración.</p>
+        <p>Tiempo de búsqueda: {{ '%.4f'|format(Tiempo) }} s</p>
+        <div class="botones-sin-solucion">
+            <a href="{{ url_for('inicio') }}"><button>Volver al Inicio</button></a>
+        </div>
+    </div>
+    {% else %}
     <button id="btnIniciar" onclick="iniciar()">Iniciar Animación</button>
     <button id="btnVerFinal" onclick="mostrarTableroFinal()" style="display: none;">Ver Tablero Final</button>
     <a href="{{ url_for('reiniciar') }}"><button id="btnReiniciar" style="display: none;">Reiniciar</button></a>
@@ -16,7 +28,7 @@
     <div id="contenedor">
         <div id="tablero" class="matriz"></div>
         <p id="tiempo" style="display: none;">Tiempo de resolución: {{ '%.4f'|format(Tiempo) }} s</p>
-        <p id="contador"></p>
+        <p id="contador"></p>  
     </div>
 
     <script>
@@ -179,5 +191,6 @@
             intervalo = setInterval(mostrarSiguientePaso, VELOCIDAD);
         }
     </script>
+    {% endif %}
 </body>
 </html>
