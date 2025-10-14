@@ -9,7 +9,13 @@
 <body>
     <h1>Tablero</h1>
         <div class="formulario">
-                <form method="POST" action="{{ url_for('generar') }}">
+                <form method="POST" action="{{ url_for('main') }}">
+
+                    <!-- Estos inputs estan ocultos por que no es necesario ingresarlos denuevo es para evitar errores en app.py  -->
+                    <input type="hidden" name="tamaño" value="{{ tamaño }}">
+                    <input type="hidden" name="fila" value="{{ fila }}">
+                    <input type="hidden" name="columna" value="{{ columna }}">
+
                     {{ macros.Tablero(tamaño, fila, columna) }}
                     <button type="submit" name="Recorrido" value="abierto">Recorrido Abierto</button>
                     <button type="submit" name="Recorrido" value="cerrado">Recorrido Cerrado</button>
