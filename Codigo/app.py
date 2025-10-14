@@ -32,9 +32,10 @@ def generar():
     print(f"Tamaño: {tamaño}, Fila: {fila}, Columna: {columna}, Recorrido: {Recorrido}")
 
     tipo = Recorrido
-    Ruta = generar_ruta_caballo(tamaño, fila, columna, tipo) or []
-    
-    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo)
+
+    Ruta, tiempo_total = generar_ruta_caballo(tamaño, fila, columna, tipo)
+    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo, Tiempo=tiempo_total)
+
 
 @app.route('/reiniciar')
 def reiniciar():
@@ -44,9 +45,10 @@ def reiniciar():
     Recorrido = session.get('Recorrido')
     
     tipo = Recorrido
-    Ruta = generar_ruta_caballo(tamaño, fila, columna, tipo) or []
     
-    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo)
+    Ruta, tiempo_total = generar_ruta_caballo(tamaño, fila, columna, tipo)
+    return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo, Tiempo=tiempo_total)
+
 
 @app.route('/inicio')
 def inicio():

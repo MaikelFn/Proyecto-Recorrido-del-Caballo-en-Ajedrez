@@ -266,7 +266,8 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
         adyacentes.append((fila - 1, columna + 2))
     return adyacentes
 
-def generar_ruta_caballo (tamaño, fila, columna, tipo):
+def generar_ruta_caballo(tamaño, fila, columna, tipo):
+    inicio = time.perf_counter()  # Inicio del tiempo
     tablero2 = CrearTablero(tamaño, fila, columna)
 
     Ruta = [(fila, columna, 'A')]
@@ -274,8 +275,16 @@ def generar_ruta_caballo (tamaño, fila, columna, tipo):
     if tipo == 'cerrado':
         soluciones = Encontrar_Soluciones(tablero2, fila, columna, tamaño)
         if Encontrar_Camino_Cerrado(fila, columna, tablero2, tamaño, 1, soluciones, Ruta):
-            return Ruta
+            fin = time.perf_counter()
+            tiempo_total = fin - inicio
+            return Ruta, tiempo_total
     else:
         if Encontrar_Camino_Abierto(fila, columna, tablero2, tamaño, 1, Ruta):
-            return Ruta
-    return []
+            fin = time.perf_counter()
+            tiempo_total = fin - inicio
+            return Ruta, tiempo_total
+
+    fin = time.perf_counter()
+    tiempo_total = fin - inicio
+    return [], tiempo_total
+
