@@ -204,3 +204,16 @@ body {
 .paso {
   margin: 20px 0;
 }
+
+#panelInfo {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  color: #00d1ff;
+  text-align: center;
+}
+
+#panelInfo p {
+  margin: 6px 0;
+}
+
+

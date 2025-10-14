@@ -15,16 +15,18 @@
     
     <div id="contenedor">
         <div id="tablero" class="matriz"></div>
+        <p id="tiempo" style="display: none;">Tiempo de resolución: {{ '%.4f'|format(Tiempo) }} s</p>
         <p id="contador"></p>
     </div>
 
     <script>
         var tamaño = {{ Tamaño }};
         var pasos = {{ Ruta|tojson }};
-        var VELOCIDAD = 500;
+        var VELOCIDAD = 0;
 
         var tablero = document.getElementById('tablero');
         var contador = document.getElementById('contador');
+        var tiempoElemento = document.getElementById('tiempo');
         
         var matriz = [];
 
@@ -91,6 +93,7 @@
 
             document.getElementById('btnVerFinal').style.display = 'none';
             document.getElementById('btnReiniciar').style.display = 'inline-block';
+            tiempoElemento.style.display = 'block';
 
             crearTablero();
 
@@ -136,6 +139,7 @@
                 clearInterval(intervalo);
                 document.getElementById('btnVerFinal').style.display = 'none';
                 document.getElementById('btnReiniciar').style.display = 'inline-block';
+                tiempoElemento.style.display = 'block';
                 return;
             }
 
