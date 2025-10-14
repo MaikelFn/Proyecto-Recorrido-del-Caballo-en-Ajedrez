@@ -216,4 +216,65 @@ body {
   margin: 6px 0;
 }
 
+.mensaje-sin-solucion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff8f8, #ffe5e5);
+    border: 2px solid #ffb3b3;
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem auto;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.mensaje-sin-solucion:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.25);
+}
+
+.icono-error {
+    font-size: 3rem;
+    color: #d9534f;
+    margin-bottom: 0.5rem;
+}
+
+.mensaje-sin-solucion h2 {
+    font-size: 1.8rem;
+    color: #c9302c;
+    margin: 0.5rem 0;
+    font-weight: 700;
+}
+
+.mensaje-sin-solucion p {
+    color: #555;
+    font-size: 1rem;
+    margin: 0.4rem 0;
+}
+
+.botones-sin-solucion {
+    margin-top: 1.5rem;
+}
+
+.botones-sin-solucion button {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.botones-sin-solucion button:hover {
+    background-color: #c9302c;
+    transform: scale(1.05);
+}
 
