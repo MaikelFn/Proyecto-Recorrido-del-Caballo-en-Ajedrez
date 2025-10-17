@@ -32,6 +32,21 @@
     </div>
 
     <script>
+    
+    /*
+         * Datos pasados desde Flask:
+         * - tamaño: número entero (N) con el tamaño del tablero N x N
+         * - pasos: arreglo JSON que representa la "Ruta" devuelta por el backend
+         *
+         * Formato esperado de cada entrada en 'pasos':
+         *   [fila, columna, tipo]
+         *   - fila: índice de fila (0-n)
+         *   - columna: índice de columna (0-n)
+         *   - tipo: 'A' para avance, 'R' para retroceso
+         *
+         * Notas:
+         *  - VELOCIDAD controla el intervalo entre pasos en ms. Si es 0, la animación es casi instantánea.
+         */
         var tamaño = {{ Tamaño }};
         var pasos = {{ Ruta|tojson }};
         var VELOCIDAD = 0;
@@ -42,6 +57,17 @@
         
         var matriz = [];
 
+        /* 
+         * crearTablero()
+         *
+         * Entradas:
+         *   - ninguna (usa la variable global 'tamaño')
+         * Salidas:
+         *   - construye en el DOM la cuadrícula del tablero y actualiza la variable global 'matriz'
+         * Restricciones:
+         *   - modifica el DOM en el elemento con id="tablero"
+         *   - asume 'tamaño' es un entero >= 1
+         */
         function crearTablero() {
             tablero.innerHTML = '';
             matriz = [];
@@ -68,6 +94,22 @@
             }
         }
 
+        /*
+         * aplicarPaso(paso, anterior)
+         *
+         * Entradas:
+         *   - paso: arreglo [filaDestino, colDestino, tipo] donde tipo es 'A' o 'R'
+         *   - anterior: objeto {fila: x, columna: y} o null si no hay anterior
+         *
+         * Salidas:
+         *   - actualiza las clases y el contenido textual de celdas en 'matriz' para
+         *     reflejar un avance o un retroceso.
+         *
+         * Restricciones:
+         *   - asume que 'paso' y 'anterior' están dentro de los límites 0..tamaño-1
+         *   - modifica directamente los elementos DOM en 'matriz'
+         *   - usa la variable global 'numeroPaso' para numerar visitas
+         */
         function aplicarPaso(paso, anterior) {
             var filaDestino = paso[0];
             var colDestino = paso[1];
@@ -94,6 +136,18 @@
             celdaDestino.textContent = '';
         }
 
+        /*
+         * mostrarTableroFinal()
+         *
+         * Entradas:
+         *   - ninguna explícita (usa 'pasos' y 'PasosTotal' globales)
+         * Salidas:
+         *   - reconstruye el tablero mostrando el tablero final contenido en pasos[PasosTotal-1]
+         *
+         * Restricciones:
+         *   - detiene la animación si está corriendo.
+         *   - muestra el elemento con id='tiempo'.
+         */
         function mostrarTableroFinal() {
             if (PasosTotal === 0) {
                 return;
@@ -144,6 +198,17 @@
         var numeroPaso = 0;
         var PasosTotal = pasos.length;
 
+        /*
+         * mostrarSiguientePaso()
+         *
+         * Entradas:
+         *   - ninguna (usa 'pasos', 'indice', 'posAnterior')
+         * Salidas:
+         *   - aplica el siguiente paso de la lista y actualiza el contador visual
+         *
+         * Restricciones:
+         *   - si 'indice' alcanza 'PasosTotal', detiene la animación y muestra el tiempo y botones
+         */
         function mostrarSiguientePaso() {
             indice = indice + 1;
 
@@ -166,6 +231,18 @@
             contador.textContent = 'Paso ' + (indice + 1) + ' de ' + PasosTotal;
         }
 
+        /*
+         * iniciar()
+         *
+         * Entradas:
+         *   - ninguna (usa variables globales inicializadas arriba)
+         * Salidas:
+         *   - arranca la animación del recorrido (configurando intervalo que llama a mostrarSiguientePaso)
+         *
+         * Restricciones / Efectos:
+         *   - muestra/oculta botones en la UI
+         *   - asume que 'pasos' tiene al menos un elemento
+         */
         function iniciar() {
             if (PasosTotal === 0) {
                 return;
