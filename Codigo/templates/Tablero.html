@@ -9,6 +9,18 @@
 <body>
     <h1>Tablero</h1>
         <div class="formulario">
+            <!--
+          Formulario para iniciar la generación del recorrido.
+          
+          Flujo:
+            1. El usuario escogió tamaño/fila/columna en Entradas.html y app.py guardó esos valores en session.
+            2. Al llegar a esta plantilla, mostramos una vista del tablero con la macro Tablero.
+            3. El usuario elige uno de los dos botones: "Recorrido Abierto" o "Recorrido Cerrado".
+               Ambos botones realizan POST a la misma ruta (/generar) pero con distinto valor en 'Recorrido'.
+            4. app.py debe leer session['tamaño'], session['fila'], session['columna'] y request.form['Recorrido']
+               para invocar a la lógica y generar la ruta.
+          
+        -->
                 <form method="POST" action="{{ url_for('generar') }}">
                     {{ macros.Tablero(tamaño, fila, columna) }}
                     <button type="submit" name="Recorrido" value="abierto">Recorrido Abierto</button>
