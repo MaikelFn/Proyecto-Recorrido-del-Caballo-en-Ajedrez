@@ -72,8 +72,8 @@ def generar():
       1. Recupera desde session los parámetros (tamaño, fila, columna) establecidos previamente.
       2. Lee request.form['Recorrido'] para determinar el tipo ('abierto' o 'cerrado').
       3. Invoca generar_ruta_caballo(tamaño, fila, columna, tipo) que debe devolver:
-         (Ruta, tiempo_total) donde Ruta es la lista de pasos/eventos y tiempo_total es el tiempo
-         de cómputo en segundos.
+        (Ruta, tiempo_total) donde Ruta es la lista de pasos/eventos y tiempo_total es el tiempo
+        de cómputo en segundos.
       4. Renderiza 'Ruta.html' pasando Ruta, Tamaño, Tipo y Tiempo.
 
     Entradas:
@@ -94,11 +94,14 @@ def generar():
 
     session['Recorrido'] = Recorrido
 
-    print(f"Tamaño: {tamaño}, Fila: {fila}, Columna: {columna}, Recorrido: {Recorrido}")
-
     tipo = Recorrido
+    if tipo == 'cerrado' and tamaño % 2 != 0:
+        return render_template('Error.html', mensaje="No existe recorrido cerrado para tableros de tamaño impar.", tamaño=tamaño)
 
     Ruta, tiempo_total = generar_ruta_caballo(tamaño, fila, columna, tipo)
+    if not Ruta:
+        return render_template('Error.html', mensaje=f"No existe un recorrido {tipo} para esta configuración.", tamaño=tamaño)
+
     return render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo, Tiempo=tiempo_total)
 
 
