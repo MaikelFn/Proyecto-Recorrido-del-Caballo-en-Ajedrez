@@ -332,3 +332,37 @@ body {
     transform: scale(1.05);
 }
 
+.formulario select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    color: var(--text);
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background-color .15s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.formulario select:hover {
+    border-color: #2f3542;
+    background: #10131a;
+}
+
+.formulario select:focus {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px rgba(0,209,255,.18);
+    background: #0e1117;
+}
+
+.formulario select {
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px 18px;
+    padding-right: 36px;
+}
+

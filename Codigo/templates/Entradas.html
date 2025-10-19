@@ -10,50 +10,61 @@
     <h1>Recorrido del Caballo</h1>
     
     <div class="formulario">
-        <!--
-        Formulario principal:
-        - method="POST" envía los datos a la ruta gestionada por app.py -> 'tablero'
-        - app.py valida y convierte estos valores a int antes de usarlos.
-        -->
+        <!-- Formulario principal para seleccionar parámetros del recorrido -->
         <form method="POST" action="{{ url_for('tablero') }}">
             <div class="Entrada">
+                <!-- Menú desplegable para seleccionar el tamaño del tablero -->
                 <label>Tamaño del tablero:</label>
-                <input type="number" id="tamaño" name="tamaño" min="4" max="7" value="7" required>
+                <select id="tamaño" name="tamaño" required>
+                    {% for n in range(4, 8) %}
+                        <option value="{{ n }}">{{ n }} x {{ n }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="Entrada">
+                <!-- Menú desplegable para seleccionar la fila inicial del caballo -->
                 <label>Fila del caballo:</label>
-                <input type="number" id="fila" name="fila" min="0" max="6" value="0" required>
+                <select id="fila" name="fila" required>
+                    {% for n in range(0, 7) %}
+                        <option value="{{ n }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
             </div>
             
             <div class="Entrada">
+                <!-- Menú desplegable para seleccionar la columna inicial del caballo -->
                 <label>Columna del caballo:</label>
-                <input type="number" id="columna" name="columna" min="0" max="6" value="0" required>
+                <select id="columna" name="columna" required>
+                    {% for n in range(0, 7) %}
+                        <option value="{{ n }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
             </div>
             
-            <!--
-            Botón de envío:
-            - Envía los tres campos al endpoint '/tablero' que guarda los valores en session
-            y renderiza la plantilla 'Tablero.html'.
-            -->
+            <!-- Botón para enviar el formulario y generar la vista previa del tablero -->
             <button type="submit">Generar</button>
         </form>
-
-        <script>
-        document.getElementById('tamaño').addEventListener('input', function() {
-            const tamaño = parseInt(this.value, 10);
-            const max = tamaño > 0 ? tamaño - 1 : 0;
-            document.getElementById('fila').max = max;
-            document.getElementById('columna').max = max;
-
-            if (parseInt(document.getElementById('fila').value, 10) > max) {
-                document.getElementById('fila').value = max;
-            }
-            if (parseInt(document.getElementById('columna').value, 10) > max) {
-                document.getElementById('columna').value = max;
-            }
-        });
-        </script>
     </div>
+
+    <script>
+    /*
+     * Script para actualizar las opciones de fila y columna
+     * según el tamaño seleccionado en el menú desplegable.
+     * Así, si el usuario cambia el tamaño del tablero,
+     * los menús de fila y columna se ajustan automáticamente.
+     */
+    document.getElementById('tamaño').addEventListener('change', function() {
+        const tamaño = parseInt(this.value, 10);
+        const filaSelect = document.getElementById('fila');
+        const columnaSelect = document.getElementById('columna');
+        filaSelect.innerHTML = '';
+        columnaSelect.innerHTML = '';
+        for (let i = 0; i < tamaño; i++) {
+            filaSelect.innerHTML += `<option value="${i}">${i}</option>`;
+            columnaSelect.innerHTML += `<option value="${i}">${i}</option>`;
+        }
+    });
+    </script>
 </body>
 </html>
