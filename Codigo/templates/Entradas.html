@@ -11,33 +11,49 @@
     
     <div class="formulario">
         <!--
-          Formulario principal:
-          - method="POST" envía los datos a la ruta gestionada por app.py -> 'tablero'
-          - app.py valida y convierte estos valores a int antes de usarlos.
+        Formulario principal:
+        - method="POST" envía los datos a la ruta gestionada por app.py -> 'tablero'
+        - app.py valida y convierte estos valores a int antes de usarlos.
         -->
         <form method="POST" action="{{ url_for('tablero') }}">
             <div class="Entrada">
                 <label>Tamaño del tablero:</label>
-                <input type="number" name="tamaño" min="4" max="7" value="4" required>
+                <input type="number" id="tamaño" name="tamaño" min="4" max="7" value="7" required>
             </div>
 
             <div class="Entrada">
                 <label>Fila del caballo:</label>
-                <input type="number" name="fila" min="0" max="7" value="0" required>
+                <input type="number" id="fila" name="fila" min="0" max="6" value="0" required>
             </div>
             
             <div class="Entrada">
                 <label>Columna del caballo:</label>
-                <input type="number" name="columna" min="0" max="7" value="0" required>
+                <input type="number" id="columna" name="columna" min="0" max="6" value="0" required>
             </div>
             
             <!--
-              Botón de envío:
-              - Envía los tres campos al endpoint '/tablero' que guarda los valores en session
-                y renderiza la plantilla 'Tablero.html'.
+            Botón de envío:
+            - Envía los tres campos al endpoint '/tablero' que guarda los valores en session
+            y renderiza la plantilla 'Tablero.html'.
             -->
             <button type="submit">Generar</button>
         </form>
+
+        <script>
+        document.getElementById('tamaño').addEventListener('input', function() {
+            const tamaño = parseInt(this.value, 10);
+            const max = tamaño > 0 ? tamaño - 1 : 0;
+            document.getElementById('fila').max = max;
+            document.getElementById('columna').max = max;
+
+            if (parseInt(document.getElementById('fila').value, 10) > max) {
+                document.getElementById('fila').value = max;
+            }
+            if (parseInt(document.getElementById('columna').value, 10) > max) {
+                document.getElementById('columna').value = max;
+            }
+        });
+        </script>
     </div>
 </body>
 </html>
