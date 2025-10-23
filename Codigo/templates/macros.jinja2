@@ -13,23 +13,3 @@
   {% endfor %}
 </div>
 {% endmacro %}
-
-{% macro MostrarMatriz(M) %}
-<div class="matriz">
-  {% for fila in (M) %}
-    <div class="fila">
-      {% for col in (fila) %}
-      {% if col == 'N' %}
-        <div class="celda"></div>
-      {% elif col == 'V' %}
-        <div class="celda visitada"></div>
-      {% elif col == 'C' %}
-        <div class="celda caballo"></div>
-      {% elif col == 'R' %}
-        <div class="celda retroceso"></div>
-      {% endif %}
-      {% endfor %}
-    </div>
-  {% endfor %}
-</div>
-{% endmacro %}

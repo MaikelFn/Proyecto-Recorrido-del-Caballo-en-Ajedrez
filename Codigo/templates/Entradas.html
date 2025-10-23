@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Recorrido del Caballo</title>
+    <!-- Hoja de estilos principal -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <!-- Título principal de la página -->
     <h1>Recorrido del Caballo</h1>
     
     <div class="formulario">
@@ -17,7 +19,13 @@
                 <label>Tamaño del tablero:</label>
                 <select id="tamaño" name="tamaño" required>
                     {% for n in range(4, 8) %}
-                        <option value="{{ n }}">{{ n }} x {{ n }}</option>
+                        <option 
+                            value="{{ n }}"
+                            {% if n == 7 %}
+                                selected
+                            {% endif %}>
+                            {{ n }} x {{ n }}
+                        </option>
                     {% endfor %}
                 </select>
             </div>
