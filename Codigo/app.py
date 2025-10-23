@@ -82,10 +82,7 @@ def generar():
 
     Salidas:
       - render_template('Ruta.html', Ruta=Ruta, Tamaño=tamaño, Tipo=tipo, Tiempo=tiempo_total)
-
-    Restricciones / efectos:
-      - Se imprime en consola (print) la configuración recibida para depuración.
-    """
+      """
 
     tamaño = session.get('tamaño')
     fila = session.get('fila')

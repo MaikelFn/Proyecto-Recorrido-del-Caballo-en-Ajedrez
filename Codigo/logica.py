@@ -1,11 +1,3 @@
-"""
-Módulo de lógica para el Recorrido del Caballo en Ajedrez.
-
-Descripción: Lógica para encontrar un camino válido para el caballo en un tablero de ajedrez.
-
-Autores: Flores Navarro Maikel Andres, Wynta Rodriguez Tayler Yadir, Lopez Cruz Axel Josue.
-Fecha: 04-10-2025
-"""
 import copy
 import time
 
@@ -21,8 +13,8 @@ def CrearTablero(Tamaño, FilaInicial, ColumnaInicial):
     Returns:
         list: Matriz que representa el tablero de ajedrez.
     Notes:
-        La matriz se inicializa con 'N' (no visitada) en todas las posiciones, 
-        excepto en la posición inicial del caballo, que se establece en 'C' (caballo).
+        La matriz se inicializa con -1 (no visitada) en todas las posiciones, 
+        excepto en la posición inicial del caballo, que se establece en 0 (caballo).
     """
     tablero = []
     for fila in range(Tamaño):
@@ -245,7 +237,7 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
     
     Notes:
         Esta función evalúa los 8 movimientos posibles del caballo desde la posición inicial
-        y retorna aquellas posiciones que son válidas (dentro del tablero y no visitadas).
+        y retorna aquellas posiciones que son válidas.
     """
     adyacentes = []
     if Movimiento_Valido(tablero, fila + 2, columna - 1, tamaño):
@@ -267,7 +259,24 @@ def Encontrar_Soluciones(tablero, fila, columna, tamaño):
     return adyacentes
 
 def generar_ruta_caballo(tamaño, fila, columna, tipo):
-    inicio = time.perf_counter()  # Inicio del tiempo
+    """
+    Genera la ruta del recorrido del caballo en el tablero de ajedrez.
+
+    Args:
+        tamaño (int): Tamaño del tablero (n x n).
+        fila (int): Fila inicial del caballo.
+        columna (int): Columna inicial del caballo.
+        tipo (str): Tipo de recorrido ('abierto' o 'cerrado').
+
+    Returns:
+        tuple: (Ruta, tiempo_total)
+            Ruta (list): Lista de movimientos realizados por el caballo.
+            tiempo_total (float): Tiempo que tardó en encontrar la solución (en segundos).
+
+    Notes:
+        Si no se encuentra solución, Ruta será una lista vacía.
+    """
+    inicio = time.perf_counter()
     tablero2 = CrearTablero(tamaño, fila, columna)
 
     Ruta = [(fila, columna, 'A')]

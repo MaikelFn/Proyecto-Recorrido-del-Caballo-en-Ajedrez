@@ -4,26 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Tablero</title>
+    <!-- Hoja de estilos principal -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
+    <!-- Título de la página de vista previa del tablero -->
     <h1>Tablero</h1>
-        <div class="formulario">
-            <!--
-            Formulario para iniciar la generación del recorrido.
-            Flujo:
-            1. El usuario escogió tamaño/fila/columna en Entradas.html y app.py guardó esos valores en session.
-            2. Al llegar a esta plantilla, mostramos una vista del tablero con la macro Tablero.
-            3. El usuario elige uno de los dos botones: "Recorrido Abierto" o "Recorrido Cerrado".
-            Ambos botones realizan POST a la misma ruta (/generar) pero con distinto valor en 'Recorrido'.
-            4. app.py debe leer session['tamaño'], session['fila'], session['columna'] y request.form['Recorrido']
-            para invocar a la lógica y generar la ruta.
-        -->
-                <form method="POST" action="{{ url_for('generar') }}">
-                    {{ macros.Tablero(tamaño, fila, columna) }}
-                    <button type="submit" name="Recorrido" value="abierto">Recorrido Abierto</button>
-                    <button type="submit" name="Recorrido" value="cerrado">Recorrido Cerrado</button>
-                </form>
-        </div>
+    <div class="formulario">
+        <!-- Formulario para seleccionar el tipo de recorrido -->
+        <form method="POST" action="{{ url_for('generar') }}">
+            <!-- Macro para mostrar el tablero con la posición inicial del caballo -->
+            {{ macros.Tablero(tamaño, fila, columna) }}
+            <!-- Botón para solicitar un recorrido abierto -->
+            <button type="submit" name="Recorrido" value="abierto">Recorrido Abierto</button>
+            <!-- Botón para solicitar un recorrido cerrado -->
+            <button type="submit" name="Recorrido" value="cerrado">Recorrido Cerrado</button>
+        </form>
+    </div>
 </body>
 </html>
