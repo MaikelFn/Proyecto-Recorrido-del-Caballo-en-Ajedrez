@@ -23,6 +23,8 @@
         <p id="tiempo" style="display: none;">Tiempo de resolución: {{ '%.4f'|format(Tiempo) }} s</p>
         <!-- Contador de pasos -->
         <p id="contador"></p>  
+        <!-- Contador de retrocesos -->
+        <p id="contador-retrocesos">Retrocesos: 0</p>
     </div>
 
     <script>
@@ -47,6 +49,7 @@
     var tablero = document.getElementById('tablero');
     var contador = document.getElementById('contador');
     var tiempoElemento = document.getElementById('tiempo');
+    let retrocesos=0;
     
     var matriz = [];
 
@@ -121,6 +124,8 @@
                 numeroPaso = Math.max(0, numeroPaso - 1);
                 celdaAnterior.className = 'celda retroceso';
                 celdaAnterior.textContent = '';
+                retrocesos++;
+                document.getElementById('contador-retrocesos').textContent = `Retrocesos: ${retrocesos}`;
             }
         }
 
@@ -180,7 +185,14 @@
             fila = fila + 1;
         }
 
-        contador.textContent = 'Tablero Final - ' + (tamaño * tamaño) + ' movimientos';
+        var totalPasos = PasosTotal;
+        var totalRetrocesos = pasos.filter(p => p[2] === 'R').length;
+
+        document.getElementById('contador').innerHTML = `
+            Pasos Totales: ${totalPasos}<br><br>
+            Retrocesos: ${totalRetrocesos}
+        `;
+        document.getElementById('contador-retrocesos').style.display = 'none';
     }
 
     crearTablero();
@@ -205,7 +217,7 @@
     function mostrarSiguientePaso() {
         indice = indice + 1;
 
-        if (indice >= PasosTotal) {
+        if (indice >= PasosTotal-1) {
             clearInterval(intervalo);
             document.getElementById('btnVerFinal').style.display = 'none';
             document.getElementById('btnReiniciar').style.display = 'inline-block';
