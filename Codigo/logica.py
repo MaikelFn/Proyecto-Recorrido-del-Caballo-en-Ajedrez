@@ -115,7 +115,6 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
     Args:
         Ruta: Lista que almacena tuplas (fila, columna, tipo) donde tipo es 'A' (avance) o 'R' (retroceso)
     """
-    tablero[filaAnterior][colAnterior] = contador - 1
     tablero[filaActual][colActual] = contador
     Ruta.append((filaActual, colActual, 'A'))
     
@@ -123,7 +122,6 @@ def realizar_movimiento_Abierto(tablero, filaActual, colActual, Tamaño, contado
         return True
 
     tablero[filaActual][colActual] = -1
-    tablero[filaAnterior][colAnterior] = contador - 1
     Ruta.append((filaAnterior, colAnterior, 'R'))
 
     return False
@@ -209,14 +207,12 @@ def Realizar_Movimiento_Cerrado(tablero, filaActual, colActual, Tamaño, contado
     Notes:
         Esta función guarda el número de movimiento en cada posición visitada del tablero.
     """
-    tablero[filaAnterior][colAnterior] = contador - 1  # guardar el número del movimiento anterior
     tablero[filaActual][colActual] = contador  # guardar el número del movimiento actual
     Ruta.append((filaActual, colActual, 'A'))
     
     if Encontrar_Camino_Cerrado(filaActual, colActual, tablero, Tamaño, contador + 1, soluciones, Ruta):
         return True
     tablero[filaActual][colActual] = -1  # restaurar como no visitada
-    tablero[filaAnterior][colAnterior] = contador - 1  # restaurar el número anterior
     Ruta.append((filaAnterior, colAnterior, 'R'))
     
     return False
