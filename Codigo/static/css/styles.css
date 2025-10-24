@@ -22,10 +22,19 @@
   transition: transform .15s, box-shadow .15s, border-color .15s;
 }
 
+.celda.caballo {
+  background: #000 url('./img/caballo_blanco.png') center/contain no-repeat;
+  filter: drop-shadow(0 0 1px rgba(0,0,0,.6));
+}
 
 .celda.visitada {
   background: #00f729;
   border-color: #bfbfbf;
+}
+
+.celda.retroceso {
+  background: #ff3333;
+  border-color: #ff6666;
 }
 
 .caballo{
@@ -137,7 +146,7 @@ input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
   transition: filter .15s, transform .06s, box-shadow .15s;
 }
 .formulario button:hover{
-  /* brillo suave alrededor del borde */
+
   box-shadow: 0 0 0 6px rgba(0,209,255,0.10), 0 8px 20px rgba(2,10,20,0.35);
   filter: brightness(1.02);
 }
@@ -167,3 +176,193 @@ input::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
   margin: 0 auto;
   margin-bottom: 10px;
 }
+
+body {
+  text-align: center;
+  padding: 20px;
+}
+
+
+#btnIniciar, #btnInicio {
+    padding: 15px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+#btnIniciar {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+#btnIniciar:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+#btnInicio {
+    background: linear-gradient(135deg, #2196F3, #1976D2);
+}
+
+#btnInicio:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+
+
+
+#btnVerFinal, #btnReiniciar {
+    padding: 14px 36px;
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+
+#btnVerFinal {
+    background: linear-gradient(135deg, #FF9800, #F57C00);
+}
+
+#btnVerFinal:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+
+#btnReiniciar {
+    background: linear-gradient(135deg, #E91E63, #C2185B);
+}
+
+#btnReiniciar:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+
+
+#contenedor {
+  display: none;
+}
+
+.paso {
+  margin: 20px 0;
+}
+
+#panelInfo {
+  margin-top: 12px;
+  font-size: 1.1rem;
+  color: #00d1ff;
+  text-align: center;
+}
+
+#panelInfo p {
+  margin: 6px 0;
+}
+
+.mensaje-sin-solucion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #fff8f8, #ffe5e5);
+    border: 2px solid #ffb3b3;
+    border-radius: 16px;
+    padding: 2rem;
+    margin: 2rem auto;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.15);
+    text-align: center;
+    transition: all 0.3s ease-in-out;
+}
+
+.mensaje-sin-solucion:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.25);
+}
+
+.icono-error {
+    font-size: 3rem;
+    color: #d9534f;
+    margin-bottom: 0.5rem;
+}
+
+.mensaje-sin-solucion h2 {
+    font-size: 1.8rem;
+    color: #c9302c;
+    margin: 0.5rem 0;
+    font-weight: 700;
+}
+
+.mensaje-sin-solucion p {
+    color: #555;
+    font-size: 1rem;
+    margin: 0.4rem 0;
+}
+
+.botones-sin-solucion {
+    margin-top: 1.5rem;
+}
+
+.botones-sin-solucion button {
+    background-color: #d9534f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.botones-sin-solucion button:hover {
+    background-color: #c9302c;
+    transform: scale(1.05);
+}
+
+.formulario select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    color: var(--text);
+    background: #0f1218;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s, background-color .15s;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.formulario select:hover {
+    border-color: #2f3542;
+    background: #10131a;
+}
+
+.formulario select:focus {
+    border-color: var(--focus);
+    box-shadow: 0 0 0 3px rgba(0,209,255,.18);
+    background: #0e1117;
+}
+
+.formulario select {
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px 18px;
+    padding-right: 36px;
+}
+
